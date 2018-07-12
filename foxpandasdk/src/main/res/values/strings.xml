@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FoxPandaSDK</string>
+
+    <string name="default_notification_channel_id">channel_id</string>
+    <string name="notifications_admin_channel_name">channel_name</string>
+    <string name="notifications_admin_channel_description">channel_description</string>
+</resources>
