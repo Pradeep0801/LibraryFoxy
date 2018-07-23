@@ -13,4 +13,11 @@
         android:text="Hello World!"
         android:id="@+id/txtView" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical"
+        />
+
 </RelativeLayout>
