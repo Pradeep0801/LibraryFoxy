@@ -25,7 +25,7 @@ internal class ShareNotification(context: Context, remoteMessage: RemoteMessage)
 
         if(shareMessage != null) {
             views.setViewVisibility(R.id.share, View.VISIBLE)
-            initShareIntent(context, views, shareMessage)
+            initShareIntent(context, views, shareMessage,notificationId)
         }
         else {
             views.setViewVisibility(R.id.share, View.GONE)

@@ -26,6 +26,7 @@ class ApkInfoExtractor(context2:Context) {
             if (!isSystemPackage(resolveInfo))
             {
                 ApkPackageName.add(activityInfo.applicationInfo.packageName)
+
             }
         }
         return ApkPackageName

@@ -1,11 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.symb.foxpandasdk">
-
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <application>
+
+        <activity android:name=".MediaManager.FoxListening"/>
 
         <service
             android:name=".services.FCMService">
@@ -29,6 +36,7 @@
             android:resource="@mipmap/ic_launcher" />
 
         <receiver android:name=".services.ClickEventHandler" />
+        <receiver android:name=".services.DeleteEventHandler"/>
 
         <activity android:name=".ui.RichMediaNotification" android:screenOrientation="portrait" />
 

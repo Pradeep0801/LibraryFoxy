@@ -1,5 +1,7 @@
 package com.symb.foxpandasdk.data.models
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import com.google.gson.annotations.SerializedName
 import com.symb.foxpandasdk.main.FoxPanda
 import com.symb.foxpandasdk.utils.DeviceInfoUtil
@@ -57,6 +59,43 @@ internal data class RegisterDeviceModel(
 )
 
 internal data class  UserActivityTimeModel(
-        var in_time : String = "",
-        var out_time : String = ""
+        var in_time : Long = 0L,
+        var out_time : Long = 0L
+)
+
+internal data class AppPackageInfo(
+        var packageName : String = "",
+        var packageAppName : String = "",
+        var packageAppIcon : Drawable? = null
+
+)
+
+internal data class AppUsageStats(
+        var device_id : String = "",
+        var app_package_name : String = "",
+        var in_time: Long = 0L,
+        var out_time : Long = 0L,
+        var app_total_time : Long = 0L
+)
+
+internal data class ListOfInstalledApp(
+        var device_id : String = "",
+        var app_package_name : String = "",
+        var app_installed_name : String = ""
+)
+
+internal data class NotificationActionModel(
+        var device_id: String = "",
+        var notificationId : Long = 0L,
+        var receivedAt : Long = 0L,
+        var openedAt : Long = 0L,
+        var clearedAt : Long = 0L
+)
+
+data class NotificationModel(
+        var notificationId: Long = 0L,
+        var notificationTitle : String = "",
+        var notificationContent : String = "",
+        var notificationImage : String = "",
+        var notificationTime : Long = 0L
 )

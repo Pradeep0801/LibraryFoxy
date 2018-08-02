@@ -19,6 +19,7 @@ import android.os.StrictMode
 import java.io.IOException
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.View
 
 
@@ -40,9 +41,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         FoxPanda.initialize(this)
         AppBackgroundHelper.init(myApp,this)
+
+        val notification = FoxPanda.getNotificationList(this)
+        for(i in notification){
+            Log.e("title",i.notificationTitle)
+            Log.e("image",i.notificationImage)
+        }
+
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        scheduleNotification(getNotification("Test Schedule Notification"), 5000);
+       // scheduleNotification(getNotification("Test Schedule Notification"), 5000);
 
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
 
@@ -54,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         adapter = AppsAdapter(this, ApkInfoExtractor(this).GetAllInstalledApkInfo())
 
         recyclerView!!.setAdapter(adapter)
+
+
+
 
     }
 
@@ -91,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         builder.setContentTitle("Scheduled Notification")
         builder.setContentText(content)
         builder.setSmallIcon(R.drawable.app_icon)
-        builder.setLargeIcon(getBitmapfromUrl("https://s3-us-west-2.amazonaws.com/foxpanda-documentavion/documentation/android/IMG-20180717-WA0006.png"))
+        //builder.setLargeIcon(getBitmapfromUrl("https://s3-us-west-2.amazonaws.com/foxpanda-documentavion/documentation/android/IMG-20180717-WA0006.png"))
         return builder.build()
     }
 

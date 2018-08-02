@@ -22,6 +22,39 @@ internal object Constants {
     val NOTIFICATION_DISPLAYED = "notification_displayed"
     val NOTIFICATION_CLICKED = "notification_clicked"
 
+
+    //TABLE NAME FOR DATABASE -- APP INSTALLED BY USER TABLE
+    val APP_INSTALLED_BY_USER_TABLE = "app_installed_by_user"
+    // COLUMN NAME FOR DATABASE --- APP INSTALLED BY USER TABLE
+    val APP_PACKAGE_NAME = "app_package_name"
+    val APP_FOREGROUND_TIME = "app_foreground_time"
+    val APP_INSTALLED_NAME = "app_installed_name"
+
+
+    //TABLE NAME FOR DATABASE -- APP USAGE STATS
+    val APP_USAGE_STATS_TABLE = "app_usage_stats"
+
+    //COLUMN NAME FOR DATABASE -- APP USAGE STATS
+    val APP_GET_FIRST_TIME_STAMP = "in_time"
+    val APP_GET_LAST_TIME_USED = "out_time"
+
+    // TABLE NAME FOR NOTIFICATION HANDLE/RECEIVE/ACTION
+    val NOTIFICATION_ACTION_TABLE = "notification_action"
+
+    //COLUMN NAME FOR NOTIFICATION ACTION
+    val APP_NOTIFICATION_ID = "notification_id"
+    val APP_NOTIFICATION_RECIEVED_AT = "notification_recieved_at"
+    val APP_NOTIFICATION_OPEN_AT = "notification_open_at"
+    val APP_NOTIFICATION_CLEARED_AT = "notification_cleared_at"
+
+
+    //NOTIFICATION LIST TABLE NAME
+    val NOTIFICATION_LIST_TABLE_NAME = "notification_table_name"
+    // COLUMN NAME FOR NOTIFICATION LIST
+    val APP_NOTIFICATION_TITLE = "notification_title"
+    val APP_NOTIFICATION_CONTENT  = "notification_content"
+    val APP_NOTIFICATION_IMAGE = "notification_image"
+
     val TITLE = "title"
     val CONTENT = "content"
     val TEMPLATE = "template"

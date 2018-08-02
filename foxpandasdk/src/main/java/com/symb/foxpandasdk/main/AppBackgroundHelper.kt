@@ -34,7 +34,6 @@ class AppBackgroundHelper private constructor() : Application.ActivityLifecycleC
     private var startTime = 0L
 
     override fun onActivityPaused(activity: Activity?) {
-
     }
 
     override fun onActivityResumed(activity: Activity?) {
@@ -42,6 +41,7 @@ class AppBackgroundHelper private constructor() : Application.ActivityLifecycleC
             startTime = System.currentTimeMillis()
         }
         numberOfActivities++
+
     }
 
     override fun onActivityStarted(activity: Activity?) {
@@ -61,16 +61,12 @@ class AppBackgroundHelper private constructor() : Application.ActivityLifecycleC
                     TimeUnit.MILLISECONDS.toMinutes(appUsedTime) % TimeUnit.HOURS.toMinutes(1),
                     TimeUnit.MILLISECONDS.toSeconds(appUsedTime) % TimeUnit.MINUTES.toSeconds(1))
 
-            Log.v(TAG, "User used app for $timeString")
-            Log.v(TAG,"Timestampstart $startTime")
-            Log.v(TAG,"Timestampend ${System.currentTimeMillis()}")
-
             val db = DBHelper(activity!!.applicationContext)
             if (FoxApplication.instance.isFoxConnectedToPanda) {
                 var userActivityTimeModelList = ArrayList<UserActivityTimeModel>()
                 var userActivityTimeModel = UserActivityTimeModel()
-                userActivityTimeModel.in_time = startTime.toString()
-                userActivityTimeModel.out_time = System.currentTimeMillis().toString()
+                userActivityTimeModel.in_time = startTime
+                userActivityTimeModel.out_time = System.currentTimeMillis()
 
                 userActivityTimeModelList.add(userActivityTimeModel)
                 CommonUtils.updateUserActivityTimeToServer(userActivityTimeModelList,false, context!!)
@@ -86,5 +82,6 @@ class AppBackgroundHelper private constructor() : Application.ActivityLifecycleC
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
 
     }
+
 
 }

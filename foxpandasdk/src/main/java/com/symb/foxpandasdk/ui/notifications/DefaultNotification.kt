@@ -43,6 +43,7 @@ internal open class DefaultNotification(var context: Context, var remoteMessage:
         if (image != null) {
             bitmap = CommonUtils.getBitmapfromUrl(image!!)
             if (bitmap != null) {
+                views.setImageViewBitmap(R.id.app_icon,bitmap)
                 views.setImageViewBitmap(R.id.noti_image, bitmap)
             }
         }
@@ -53,15 +54,17 @@ internal open class DefaultNotification(var context: Context, var remoteMessage:
             views.setTextViewText(R.id.noti_content, message)
     }
 
-    fun initShareIntent(context: Context, views: RemoteViews, shareMessage: String) {
+    fun initShareIntent(context: Context, views: RemoteViews, shareMessage: String,notificationId: Int) {
         val shareIntent = Intent(context, ClickEventHandler::class.java)
         shareIntent.action = Constants.OPEN_SHARE
         shareIntent.putExtra(Constants.SHARE_MESSAGE, shareMessage)
+        shareIntent.putExtra(Constants.NOTIFICATION_ID,notificationId)
         val pShareIntent = PendingIntent.getBroadcast(context, 0, shareIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         views.setOnClickPendingIntent(R.id.share, pShareIntent)
     }
 
     fun initOpenIntent(context: Context, views: RemoteViews, notificationId: Int, activity: String) {
+        FoxPanda.FPLogger("open_at",System.currentTimeMillis().toString())
         if(activity.equals(Constants.RICH_MEDIA))
             setOpenPendingIntent(context, views, notificationId, activity)
         else {
@@ -72,6 +75,9 @@ internal open class DefaultNotification(var context: Context, var remoteMessage:
                 if(className[0].equals(activity)) {
                     setOpenPendingIntent(context, views, notificationId, it)
                     return
+                }
+                else {
+
                 }
             }
         }

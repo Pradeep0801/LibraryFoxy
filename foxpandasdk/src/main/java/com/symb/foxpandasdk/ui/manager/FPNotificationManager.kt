@@ -14,9 +14,14 @@ import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import com.google.firebase.messaging.RemoteMessage
 import com.symb.foxpandasdk.R
+import com.symb.foxpandasdk.applications.FoxApplication
 import com.symb.foxpandasdk.constants.Constants
 import com.symb.foxpandasdk.data.dbHelper.DBHelper
+import com.symb.foxpandasdk.data.models.NotificationActionModel
+import com.symb.foxpandasdk.data.models.NotificationModel
 import com.symb.foxpandasdk.main.FoxPanda
+import com.symb.foxpandasdk.services.ClickEventHandler
+import com.symb.foxpandasdk.services.DeleteEventHandler
 import java.util.*
 
 internal class FPNotificationManager(var context: Context, var remoteMessage: RemoteMessage) {
@@ -25,13 +30,22 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
     var views: RemoteViews? = null
     var bigViews: RemoteViews? = null
     var clickIntent: Intent? = null
+    var deleteIntent: Intent? = null
     var template: String? = null
     var notificationId: Int = 0
     internal lateinit var dbHelper: DBHelper
 
     fun showNotification() {
+        dbHelper = DBHelper(context)
         template = remoteMessage.data.get(Constants.TEMPLATE)
+
+
         notificationId = Random().nextInt(60000)
+        //save notification to show list
+        val notificationModel = NotificationModel(notificationId.toLong(),remoteMessage.data.get(Constants.TITLE)!!,remoteMessage.data.get(Constants.CONTENT)!!,remoteMessage.data.get(Constants.MEDIA_URL)!!,System.currentTimeMillis())
+        val list = dbHelper.saveNotificationList(notificationModel)
+
+
         notificationManagerManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             setupChannels()
@@ -60,7 +74,7 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
         }
     }
 
-    private fun buildNotification(context: Context, pendingIntent: PendingIntent): NotificationCompat.Builder {
+    private fun buildNotification(context: Context, pendingIntent: PendingIntent, delPendingIntent: PendingIntent): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
             .setSmallIcon(R.mipmap.ic_launcher)
@@ -73,6 +87,7 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
             .setStyle(NotificationCompat.BigPictureStyle())
             .setCustomContentView(views)
             .setCustomBigContentView(bigViews)
+                .setDeleteIntent(delPendingIntent)
     }
 
     private fun notifyNotification() {
@@ -82,10 +97,20 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
         val pendingIntent = PendingIntent.getActivity(context, notificationId, clickIntent,
             PendingIntent.FLAG_ONE_SHOT)
 
-        val notificationBuilder = buildNotification(context, pendingIntent)
+        deleteIntent = Intent(context, DeleteEventHandler::class.java)
+        deleteIntent!!.putExtra(Constants.APP_NOTIFICATION_ID, notificationId)
+        val delPendingIntent = PendingIntent.getBroadcast(context, notificationId, deleteIntent,
+                PendingIntent.FLAG_ONE_SHOT)
+
+        val notificationBuilder = buildNotification(context, pendingIntent, delPendingIntent)
         notificationManagerManager!!.notify(notificationId, notificationBuilder.build())
         val result = dbHelper.registerEvent(Constants.NOTIFICATION_DISPLAYED)
-        if (result)
+        FoxPanda.FPLogger("Pradeep1", System.currentTimeMillis().toString())
+        var notificationActionModel = NotificationActionModel(FoxApplication.instance.deviceID,notificationId.toLong(),System.currentTimeMillis(),0L,0L)
+
+        val foxAction = dbHelper.saveNotificationAction(notificationActionModel)
+
+        if (foxAction)
             FoxPanda.FPLogger(Constants.NOTIFICATION_DISPLAYED, "data successfully logged")
         else
             FoxPanda.FPLogger(Constants.NOTIFICATION_DISPLAYED, "data logging failed")

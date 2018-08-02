@@ -1,10 +1,7 @@
 package com.symb.foxpandasdk.data.endpoint
 
 import android.media.session.MediaSession
-import com.symb.foxpandasdk.data.models.BaseResult
-import com.symb.foxpandasdk.data.models.DeviceInfoModel
-import com.symb.foxpandasdk.data.models.RegisterDeviceModel
-import com.symb.foxpandasdk.data.models.UserActivityTimeModel
+import com.symb.foxpandasdk.data.models.*
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -20,6 +17,9 @@ internal interface Endpoint {
 
     @POST("api/v1/sdk/platform/device/activities")
     fun updateUserActivityTimeToServer(@Body userActivityTimeModel: List<UserActivityTimeModel>): Observable<BaseResult>
+
+    @POST("api/v1/sdk/platform/notification/stats")
+    fun updateNotificationActionToServer(@Body notificationActionModel: List<NotificationActionModel>): Observable<BaseResult>
 
 
 

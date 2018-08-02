@@ -5,10 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.app.NotificationManager
+import com.symb.foxpandasdk.applications.FoxApplication
 import com.symb.foxpandasdk.constants.Constants
 import com.symb.foxpandasdk.data.dbHelper.DBHelper
+import com.symb.foxpandasdk.data.models.NotificationActionModel
 import com.symb.foxpandasdk.main.FoxPanda
 import com.symb.foxpandasdk.ui.RichMediaNotification
+import com.symb.foxpandasdk.utils.CommonUtils
 
 class ClickEventHandler: BroadcastReceiver() {
 
@@ -16,6 +19,16 @@ class ClickEventHandler: BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         dbHelper = DBHelper(context!!)
+        FoxPanda.FPLogger("Pradeepq", System.currentTimeMillis().toString())
+        val notificationId = intent!!.getIntExtra(Constants.NOTIFICATION_ID,0)
+        val notificationActionModel = NotificationActionModel(FoxApplication.instance.deviceID,notificationId.toLong(),0L,System.currentTimeMillis(),0L)
+       val isUpdated = dbHelper.updateNotificationActionToDB(notificationActionModel)
+        if (isUpdated && FoxApplication.instance.isFoxConnectedToPanda){
+            CommonUtils.updateNotificationActionToServer(dbHelper.getNotificationActionTime(),true,context)
+        }
+
+
+        FoxPanda.FPLogger("hellp","dsadfasdf")
         if(intent!!.action == Constants.OPEN_SHARE) {
             val shareMessage = intent.getStringExtra(Constants.SHARE_MESSAGE)
             if (shareMessage != null) {
@@ -58,11 +71,16 @@ class ClickEventHandler: BroadcastReceiver() {
             notificationManager.cancel(notificationId)
             closeNotificationTray(context)
         }
+        else {
+
+        }
     }
 
     fun closeNotificationTray(context: Context) {
         val closeIntent = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
         context.sendBroadcast(closeIntent)
     }
+
+
 
 }

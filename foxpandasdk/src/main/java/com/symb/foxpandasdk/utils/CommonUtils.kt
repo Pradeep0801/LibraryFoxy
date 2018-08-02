@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import com.symb.foxpandasdk.data.dbHelper.DBHelper
 import com.symb.foxpandasdk.data.models.DeviceInfoModel
+import com.symb.foxpandasdk.data.models.NotificationActionModel
 import com.symb.foxpandasdk.data.models.RegisterDeviceModel
 import com.symb.foxpandasdk.data.models.UserActivityTimeModel
 import com.symb.foxpandasdk.main.FoxPanda
@@ -95,6 +96,22 @@ internal object CommonUtils {
                         if (deleteEnable) {
                             val db = DBHelper(context)
                             db.deleteUserActivityTime()
+                        }
+                        Log.e("result",result.message)
+                    }
+                }, this::handleError))
+    }
+
+    fun updateNotificationActionToServer(notificationActionModel:List<NotificationActionModel>,deleteEnable : Boolean,context: Context) {
+        compositeDisposable.add(NetworkUtil.getEndpoint()!!.updateNotificationActionToServer(notificationActionModel)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    if (result != null) {
+
+                        if (deleteEnable) {
+                            val db = DBHelper(context)
+                            db.deleteNotificationAction()
                         }
                         Log.e("result",result.message)
                     }

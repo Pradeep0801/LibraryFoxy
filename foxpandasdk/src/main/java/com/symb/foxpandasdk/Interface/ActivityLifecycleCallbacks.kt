@@ -12,4 +12,5 @@ interface ActivityLifecycleCallbacks {
     fun onActivityStopped(activity: Activity)
     fun onActivitySaveInstanceState(activity: Activity, outState: Bundle)
     fun onActivityDestroyed(activity: Activity)
+
 }
