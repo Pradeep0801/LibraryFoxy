@@ -8,24 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:697445704131:android:4c58c7d0074d9a03",
+        "mobilesdk_app_id": "1:697445704131:android:a649226efc965280",
         "android_client_info": {
-          "package_name": "com.symb.foxpandasdk"
+          "package_name": "com.sdk.foxpanda"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "697445704131-ltuv5vn5vr9lab1eatfg547uj38mg7lj.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.symb.foxpandasdk",
-            "certificate_hash": "6d89cc0cc383552f901354b1d5b78683220960e8"
-          }
-        },
-        {
-          "client_id": "697445704131-sdoq2gse7qo0fpbemkn10h9i76r77uhq.apps.googleusercontent.com",
-          "client_type": 3
-        },
         {
           "client_id": "697445704131-sdoq2gse7qo0fpbemkn10h9i76r77uhq.apps.googleusercontent.com",
           "client_type": 3
@@ -41,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "697445704131-sdoq2gse7qo0fpbemkn10h9i76r77uhq.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
