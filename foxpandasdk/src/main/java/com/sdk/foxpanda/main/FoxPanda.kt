@@ -80,6 +80,8 @@ class FoxPanda {
 
 
 
+
+
 //            handler.postDelayed({
 //                Log.d(TAG, "run: 1")
 //                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
@@ -172,6 +174,7 @@ class FoxPanda {
             // START SERVICE FOR CHECKING FOREGROUND TIME OF APPLICATION
             context.registerReceiver(ConnectivityReceiver(),
                     IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
 
 
 

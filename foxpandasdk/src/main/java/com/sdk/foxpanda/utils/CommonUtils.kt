@@ -281,6 +281,8 @@ internal object CommonUtils {
 
         val installedAppForServer = db.getListOfInstallledApp()
         val appUsageForServer = db.getListOfInstallledAppUsageStats()
+        val notificationActionModel = db.getNotificationActionTime()
+
 
         if(installedAppForServer.size > 0 && FoxApplication.instance.isFoxConnectedToPanda){
             updateFoxListToServer(installedAppForServer,true,context)
@@ -288,6 +290,11 @@ internal object CommonUtils {
         if (appUsageForServer.size > 0 && FoxApplication.instance.isFoxConnectedToPanda){
             updateFoxUsageToServer(appUsageForServer,true,context)
         }
+        if (notificationActionModel.size > 0 && FoxApplication.instance.isFoxConnectedToPanda)
+        {
+            CommonUtils.updateNotificationActionToServer(notificationActionModel,true,context)
+        }
+
 
 
 
