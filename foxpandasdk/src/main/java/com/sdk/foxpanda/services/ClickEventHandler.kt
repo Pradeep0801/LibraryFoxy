@@ -23,7 +23,6 @@ class ClickEventHandler: BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         dbHelper = DBHelper(context!!)
-        FoxPanda.FPLogger("Pradeepq", System.currentTimeMillis().toString())
         val notificationID = intent!!.getIntExtra(Constants.NOTIFICATION_ID,0)
         val notificationActionModel = NotificationActionModel(FoxApplication.instance.deviceID,notificationID.toLong(),0L,System.currentTimeMillis(),0L)
 
@@ -36,8 +35,6 @@ class ClickEventHandler: BroadcastReceiver() {
             CommonUtils.updateNotificationActionToServer(dbHelper.getNotificationActionTime(),true,context)
         }
 
-
-        FoxPanda.FPLogger("hellp","dsadfasdf")
         if(intent!!.action == Constants.OPEN_SHARE) {
             val shareMessage = intent.getStringExtra(Constants.SHARE_MESSAGE)
             if (shareMessage != null) {
@@ -85,7 +82,10 @@ class ClickEventHandler: BroadcastReceiver() {
                     }
                 }
                 intent!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 context.startActivity(intent)
+
             }
             notificationManager.cancel(notificationId)
             closeNotificationTray(context)
@@ -99,7 +99,5 @@ class ClickEventHandler: BroadcastReceiver() {
         val closeIntent = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
         context.sendBroadcast(closeIntent)
     }
-
-
 
 }

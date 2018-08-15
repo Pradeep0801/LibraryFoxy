@@ -73,8 +73,9 @@ internal open class LeftNotification(var context: Context, var remoteMessage: Re
             val classes = db.getAllClasses()
             classes.forEach {
                 val className = it.split(".").reversed()
-                FoxPanda.FPLogger("actName", className[0])
-                if(className[0].equals(activity)) {
+                FoxPanda.FPLogger("actName", className[0].capitalize() +"\n")
+                if(className[0].equals(clickActionUrl,true)) {
+                    FoxPanda.FPLogger("actName1", clickActionUrl.capitalize() +"\n")
                     setOpenPendingIntent(context, views, notificationId, it,"")
                     return
                 }

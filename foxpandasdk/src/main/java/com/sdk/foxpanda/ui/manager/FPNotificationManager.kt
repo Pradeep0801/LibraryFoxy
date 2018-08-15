@@ -47,8 +47,6 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
 
         dbHelper = DBHelper(context)
         template = remoteMessage.data.get(Constants.TEMPLATE)
-
-
         notificationId = remoteMessage.data.get(Constants.ID)!!.toInt()
         //save notification to show list
         val notificationModel = NotificationModel(notificationId.toLong(),remoteMessage.data.get(Constants.TITLE)!!,remoteMessage.data.get(Constants.CONTENT)!!,remoteMessage.data.get(Constants.MEDIA_URL)!!,System.currentTimeMillis())
@@ -56,7 +54,6 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
         if (list){
             FoxPanda.FPLogger("Hey","Saved notification")
         }
-
 
         notificationManagerManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

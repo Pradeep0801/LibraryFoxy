@@ -6,6 +6,7 @@ internal object Constants {
     val BASE_URL = "http://api.foxpanda.io/"
     val OPEN_SHARE = "openshare"
     val OPEN_ACTIVITY = "openactivity"
+    val IN_APP = "IN_APP"
     val TABLE_NAME = "foxpanda_notification_table"
     val TOKEN_TABLE = "foxpanda_token_table"
     val CLASS_TABLE = "class_table"
