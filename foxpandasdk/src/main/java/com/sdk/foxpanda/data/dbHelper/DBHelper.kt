@@ -14,7 +14,7 @@ import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.models.*
 
 
-internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_TABLE)
@@ -26,6 +26,9 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         db.execSQL(SQL_CREATE_LIST_OF_USER_INSTALLED_APP)
         db.execSQL(SQL_CREATE_APP_USAGE_STATS_TABLE)
         db.execSQL(SQL_CREATE_NOTIFICATION_ACTION_TABLE)
+        db.execSQL(SQL_CREATE_NOTIFICATION_LIST_TABLE)
+        db.execSQL(SQL_CREATE_USER_INTERACTION_COORDINATE_TABLE)
+        db.execSQL(SQL_CREATE_PANDA_LOCATION_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
@@ -38,6 +41,9 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         db.execSQL(SQL_DELETE_USAGE_STATS_TABLE)
         db.execSQL(SQL_DELETE_NOTIFICATION_ACTION_TABLE)
         db.execSQL(SQL_DELETE_INFO_UPDATED_FLAG)
+        db.execSQL(SQL_DELETE_USER_INTERACTION_COORDINATE_TABLE)
+        db.execSQL(SQL_DELETE_NOTIFICATION_LIST_TABLE)
+        db.execSQL(SQL_DELETE_PANDA_LOCATION_TABLE)
         onCreate(db)
     }
 
@@ -53,23 +59,50 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         return result.toInt() != -1
     }
 
-    //INSERT VALUE IN DATABASE --- LIST OF APPLICATION INSTALLED BY USER -- REQUIRED API LEVEL -- 16(FOR ALL VALUES ) -- 21 (FOR APP FOREGROUND TIME)
+
+
+    // save panda location to database
     @Throws(SQLiteConstraintException::class)
-    fun saveInstalledApp(installedApp: ListOfInstalledApp): Boolean {
+    fun savePandaLocation(pandaLocationComponent: PandaLocationComponent): Boolean {
         val db = writableDatabase
         val value = ContentValues()
-        value.put(Constants.DEVICE_ID, installedApp.device_id)
-        value.put(Constants.APP_PACKAGE_NAME,installedApp.app_package_name)
-        value.put(Constants.APP_INSTALLED_NAME,installedApp.app_installed_name)
+        value.put(Constants.DEVICE_ID, FoxApplication.instance.deviceID)
+        value.put(Constants.PANDA_LONGITUDE,pandaLocationComponent.pandaLongitude)
+        value.put(Constants.PANDA_LATITUDE,pandaLocationComponent.pandaLatitude)
+        value.put(Constants.PANDA_TIMESTAMP,pandaLocationComponent.pandaTimeStamp)
+
+        val result = db.insert(Constants.USER_LOCATION_TABLE, null, value)
+        db.close()
+        return result.toInt() != -1
+    }
 
 
-        val result = db.insert(Constants.APP_INSTALLED_BY_USER_TABLE, null, value)
+
+// save fox interaction data to db
+    @Throws(SQLiteConstraintException::class)
+    fun saveUserIntractionPoint(intractionModel: FoxScreenIntractionModel,
+                                scrollModel: FoxScreenScrollPositionModel,
+                                resolutionModel: FoxScreenResolutionModel): Boolean {
+        val db = writableDatabase
+        val value = ContentValues()
+        value.put(Constants.DEVICE_ID, intractionModel.fpDevice_id)
+        value.put(Constants.FOX_ACTIVITY_NAME,intractionModel.fpActivityName)
+        value.put(Constants.FOX_LAYOUT_NAME,scrollModel.fpViewType)
+        value.put(Constants.FOX_ORIENTATION,intractionModel.fpOrientation)
+        value.put(Constants.FOX_DEVICE_HEIGHT,resolutionModel.fpDeviceHeight)
+        value.put(Constants.FOX_DEVICE_WIDTH,resolutionModel.fpDeviceWidth)
+        value.put(Constants.FOX_SCROLL_POSITION,scrollModel.fpScrollPosition)
+        value.put(Constants.FOX_MAX_SCROLL_POSITION,scrollModel.fpMaxScrollPosition)
+        value.put(Constants.FOX_INTERACTION_COORDINATE_X,intractionModel.fpCoordinateX)
+        value.put(Constants.FOX_INTERACTION_COORDINATE_Y,intractionModel.fpCoordinateY)
+
+        val result = db.insert(Constants.INTERACTION_COORDINATE_TABLE, null, value)
         db.close()
         return result.toInt() != -1
     }
 
     @Throws(SQLiteConstraintException::class)
-    fun saveNotificationAction(notificationAction : NotificationActionModel): Boolean {
+    internal fun saveNotificationAction(notificationAction : NotificationActionModel): Boolean {
         val db = writableDatabase
         val value = ContentValues()
         value.put(Constants.DEVICE_ID, FoxApplication.instance.deviceID)
@@ -102,10 +135,9 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
 
     // INSERT VALUE IN DATABASE --- APP USAGE -- APP INSTALLED BY USER -- REQUIRED API LEVEL - 21 - LOLLIPOP
     @Throws(SQLiteConstraintException::class)
-    fun saveInstalledAppUsage(appUsageStats: AppUsageStats): Boolean {
+    internal fun saveInstalledAppUsage(appUsageStats: AppUsageStats): Boolean {
         val db = writableDatabase
         val value = ContentValues()
-        value.put(Constants.DEVICE_ID, appUsageStats.device_id)
         value.put(Constants.APP_PACKAGE_NAME,appUsageStats.app_package_name)
         value.put(Constants.APP_GET_FIRST_TIME_STAMP,appUsageStats.in_time)
         value.put(Constants.APP_GET_LAST_TIME_USED,appUsageStats.out_time)
@@ -115,6 +147,25 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         db.close()
         return result.toInt() != -1
     }
+
+    //INSERT VALUE IN DATABASE --- LIST OF APPLICATION INSTALLED BY USER -- REQUIRED API LEVEL -- 16(FOR ALL VALUES ) -- 21 (FOR APP FOREGROUND TIME)
+    @Throws(SQLiteConstraintException::class)
+    fun saveInstalledApp(installedApp: ListOfInstalledApp): Boolean {
+        val db = writableDatabase
+        val value = ContentValues()
+        value.put(Constants.APP_PACKAGE_NAME,installedApp.app_package_name)
+        value.put(Constants.APP_INSTALLED_NAME,installedApp.app_installed_name)
+        value.put(Constants.APP_LAST_OPEN_AT,installedApp.lastOpenedAt)
+        value.put(Constants.APP_INSTALLED_AT,installedApp.installedAt)
+        value.put(Constants.APP_INSTALLED_VERSION,installedApp.appVersion)
+
+
+
+        val result = db.insert(Constants.APP_INSTALLED_BY_USER_TABLE, null, value)
+        db.close()
+        return result.toInt() != -1
+    }
+
 
 
     @Throws(SQLiteConstraintException::class)
@@ -143,8 +194,9 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getIsInfoUpdated(): Int {
-        val db = writableDatabase
         var cursor: Cursor? = null
+        val db = writableDatabase
+
         var isUpdated : Int = 0
         try {
             cursor = db.rawQuery("select * from " + Constants.IS_INFO_UPDATED, null)
@@ -154,7 +206,7 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         }
 
         if(cursor!!.moveToFirst()) {
-            isUpdated = cursor.getInt(cursor.getColumnIndex(Constants.INFO_UPDATE_FLAG))
+            isUpdated = cursor!!.getInt(cursor!!.getColumnIndex(Constants.INFO_UPDATE_FLAG))
         }
         db.close()
         return isUpdated
@@ -162,18 +214,18 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
 
 
     fun getToken(): String {
+        var cursor1: Cursor? = null
         val db = writableDatabase
-        var cursor: Cursor? = null
         var token = ""
         try {
-            cursor = db.rawQuery("select * from " + Constants.TOKEN_TABLE, null)
+            cursor1 = db.rawQuery("select * from " + Constants.TOKEN_TABLE, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_TOKEN_TABLE)
             return ""
         }
 
-        if(cursor!!.moveToFirst()) {
-            token = cursor.getString(cursor.getColumnIndex(Constants.FIREBASE_TOKEN))
+        if(cursor1!!.moveToFirst()) {
+            token = cursor1!!.getString(cursor1!!.getColumnIndex(Constants.FIREBASE_TOKEN))
         }
         db.close()
         return token
@@ -213,6 +265,13 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     @Throws(SQLiteConstraintException::class)
+    fun deletePandaLocationTrack() {
+        val db = writableDatabase
+        db.execSQL("delete from " + Constants.USER_LOCATION_TABLE)
+    }
+
+
+    @Throws(SQLiteConstraintException::class)
     fun registerEvent(eventName: String): Boolean {
         val db = writableDatabase
         val d_id = android.provider.Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID)
@@ -239,11 +298,11 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getAllEvents(): ArrayList<FirebaseInfo> {
+        var cursor2: Cursor? = null
         val firebaseInfo = ArrayList<FirebaseInfo>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.TABLE_NAME, null)
+            cursor2 = db.rawQuery("select * from " + Constants.TABLE_NAME, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_TABLE)
             return ArrayList<FirebaseInfo>()
@@ -252,26 +311,55 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         var token: String
         var deviceId: String
         var event: String
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                token = cursor.getString(cursor.getColumnIndex(Constants.FIREBASE_TOKEN))
-                deviceId = cursor.getString(cursor.getColumnIndex(Constants.DEVICE_ID))
-                event = cursor.getString(cursor.getColumnIndex(Constants.EVENT_NAME))
+        if (cursor2!!.moveToFirst()) {
+            while (cursor2!!.isAfterLast == false) {
+                token = cursor2!!.getString(cursor2!!.getColumnIndex(Constants.FIREBASE_TOKEN))
+                deviceId = cursor2!!.getString(cursor2!!.getColumnIndex(Constants.DEVICE_ID))
+                event = cursor2!!.getString(cursor2!!.getColumnIndex(Constants.EVENT_NAME))
 
                 firebaseInfo.add(FirebaseInfo(token, deviceId, event))
-                cursor.moveToNext()
+                cursor2!!.moveToNext()
             }
         }
         db.close()
         return firebaseInfo
     }
 
+    fun getLazyPandaLocationTrack(): ArrayList<PandaLocationComponent> {
+        var cursor3: Cursor? = null
+        val locationComponent = ArrayList<PandaLocationComponent>()
+        val db = writableDatabase
+        try {
+            cursor3 = db.rawQuery("select * from " + Constants.USER_LOCATION_TABLE, null)
+        } catch (e: SQLiteException) {
+            db.execSQL(SQL_CREATE_PANDA_LOCATION_TABLE)
+            return ArrayList<PandaLocationComponent>()
+        }
+
+        var deviceId: String = ""
+        var lazyPandaLat : String = ""
+        var lazyPandaLong : String = ""
+        var lazyPandaTimeStamp : String = ""
+        if (cursor3!!.moveToFirst()) {
+            while (cursor3!!.isAfterLast == false) {
+                lazyPandaLat = cursor3!!.getString(cursor3!!.getColumnIndex(Constants.PANDA_LATITUDE))
+                 deviceId = cursor3!!.getString(cursor3!!.getColumnIndex(Constants.DEVICE_ID))
+                lazyPandaLong = cursor3!!.getString(cursor3!!.getColumnIndex(Constants.PANDA_LONGITUDE))
+                lazyPandaTimeStamp = cursor3!!.getString(cursor3!!.getColumnIndex(Constants.PANDA_TIMESTAMP))
+                locationComponent.add(PandaLocationComponent(lazyPandaLat, lazyPandaLong,lazyPandaTimeStamp))
+                cursor3!!.moveToNext()
+            }
+        }
+        db.close()
+        return locationComponent
+    }
+
     fun getUserActivityTime(): ArrayList<UserActivityTimeModel> {
+        var cursor4: Cursor? = null
         val userActivityTimeModel = ArrayList<UserActivityTimeModel>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.USER_ACTIVITY_TIME_TABLE, null)
+            cursor4 = db.rawQuery("select * from " + Constants.USER_ACTIVITY_TIME_TABLE, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_TABLE)
             return ArrayList<UserActivityTimeModel>()
@@ -279,14 +367,14 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
 
         var in_time: Long
         var out_time: Long
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                in_time = cursor.getColumnIndex(Constants.USER_ACTIVITY_START_TIME).toLong()
-                out_time = cursor.getColumnIndex(Constants.USER_ACTIVITY_END_TIME).toLong()
+        if (cursor4!!.moveToFirst()) {
+            while (cursor4!!.isAfterLast == false) {
+                in_time = cursor4!!.getColumnIndex(Constants.USER_ACTIVITY_START_TIME).toLong()
+                out_time = cursor4!!.getColumnIndex(Constants.USER_ACTIVITY_END_TIME).toLong()
 
 
                 userActivityTimeModel.add(UserActivityTimeModel(in_time,out_time))
-                cursor.moveToNext()
+                cursor4!!.moveToNext()
             }
         }
         db.close()
@@ -294,11 +382,11 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getNotificationActionTime(): ArrayList<NotificationActionModel> {
+        var cursor5: Cursor? = null
         val notificationAction = ArrayList<NotificationActionModel>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.NOTIFICATION_ACTION_TABLE, null)
+            cursor5 = db.rawQuery("select * from " + Constants.NOTIFICATION_ACTION_TABLE, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_NOTIFICATION_ACTION_TABLE)
             return ArrayList<NotificationActionModel>()
@@ -310,15 +398,15 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         var clearedAt : Long
         var device_id : String
 
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                device_id = cursor.getString(cursor.getColumnIndex(Constants.DEVICE_ID))
-                notificationId = cursor.getLong(cursor.getColumnIndex(Constants.APP_NOTIFICATION_ID))
-                recievedAt = cursor.getLong(cursor.getColumnIndex(Constants.APP_NOTIFICATION_RECIEVED_AT))
-                openedAt = cursor.getLong(cursor.getColumnIndex(Constants.APP_NOTIFICATION_OPEN_AT))
-                clearedAt = cursor.getLong(cursor.getColumnIndex(Constants.APP_NOTIFICATION_CLEARED_AT))
+        if (cursor5!!.moveToFirst()) {
+            while (cursor5!!.isAfterLast == false) {
+                device_id = cursor5!!.getString(cursor5!!.getColumnIndex(Constants.DEVICE_ID))
+                notificationId = cursor5!!.getLong(cursor5!!.getColumnIndex(Constants.APP_NOTIFICATION_ID))
+                recievedAt = cursor5!!.getLong(cursor5!!.getColumnIndex(Constants.APP_NOTIFICATION_RECIEVED_AT))
+                openedAt = cursor5!!.getLong(cursor5!!.getColumnIndex(Constants.APP_NOTIFICATION_OPEN_AT))
+                clearedAt = cursor5!!.getLong(cursor5!!.getColumnIndex(Constants.APP_NOTIFICATION_CLEARED_AT))
                 notificationAction.add(NotificationActionModel(FoxApplication.instance.deviceID,notificationId,recievedAt,openedAt,clearedAt))
-                cursor.moveToNext()
+                cursor5!!.moveToNext()
             }
         }
         db.close()
@@ -326,29 +414,33 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getListOfInstallledApp(): ArrayList<ListOfInstalledApp> {
+        var cursor6: Cursor? = null
         val installedApp = ArrayList<ListOfInstalledApp>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.APP_INSTALLED_BY_USER_TABLE, null)
+            cursor6 = db.rawQuery("select * from " + Constants.APP_INSTALLED_BY_USER_TABLE, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_LIST_OF_USER_INSTALLED_APP)
             return ArrayList<ListOfInstalledApp>()
         }
 
-        var deviceId: String
+
         var app_package_name: String
         var app_installed_name : String
+        var app_version : String
+        var installedAt : Long
+        var lastOpenedAt : Long
 
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                deviceId  = cursor.getString(cursor.getColumnIndex(Constants.DEVICE_ID))
-                app_package_name = cursor.getString(cursor.getColumnIndex(Constants.APP_PACKAGE_NAME))
-                app_installed_name = cursor.getString(cursor.getColumnIndex(Constants.APP_INSTALLED_NAME))
+        if (cursor6!!.moveToFirst()) {
+            while (cursor6!!.isAfterLast == false) {
+                app_package_name = cursor6!!.getString(cursor6!!.getColumnIndex(Constants.APP_PACKAGE_NAME))
+                app_installed_name = cursor6!!.getString(cursor6!!.getColumnIndex(Constants.APP_INSTALLED_NAME))
+                installedAt = cursor6!!.getLong(cursor6!!.getColumnIndex(Constants.APP_INSTALLED_AT))
+                app_version = cursor6!!.getString(cursor6!!.getColumnIndex(Constants.APP_INSTALLED_VERSION))
+                lastOpenedAt = cursor6!!.getLong(cursor6!!.getColumnIndex(Constants.APP_LAST_OPEN_AT))
 
-
-                installedApp.add(ListOfInstalledApp(deviceId,app_package_name,app_installed_name))
-                cursor.moveToNext()
+                installedApp.add(ListOfInstalledApp(app_package_name,app_installed_name,installedAt,app_version,lastOpenedAt))
+                cursor6!!.moveToNext()
             }
         }
         db.close()
@@ -356,11 +448,11 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getNotification(): ArrayList<NotificationModel> {
+        var cursor8: Cursor? = null
         val notification = ArrayList<NotificationModel>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.NOTIFICATION_LIST_TABLE_NAME, null)
+            cursor8 = db.rawQuery("select * from " + Constants.NOTIFICATION_LIST_TABLE_NAME, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_NOTIFICATION_LIST_TABLE)
             return ArrayList<NotificationModel>()
@@ -374,17 +466,17 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
 
 
 
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                notificationId  = cursor.getLong(cursor.getColumnIndex(Constants.APP_NOTIFICATION_ID))
-                notificationTitle = cursor.getString(cursor.getColumnIndex(Constants.APP_NOTIFICATION_TITLE))
-                notificationContent = cursor.getString(cursor.getColumnIndex(Constants.APP_NOTIFICATION_CONTENT))
-                notificationImage = cursor.getString(cursor.getColumnIndex(Constants.APP_NOTIFICATION_IMAGE))
-                notificationTime = cursor.getLong(cursor.getColumnIndex(Constants.APP_NOTIFICATION_RECIEVED_AT))
+        if (cursor8!!.moveToFirst()) {
+            while (cursor8!!.isAfterLast == false) {
+                notificationId  = cursor8!!.getLong(cursor8!!.getColumnIndex(Constants.APP_NOTIFICATION_ID))
+                notificationTitle = cursor8!!.getString(cursor8!!.getColumnIndex(Constants.APP_NOTIFICATION_TITLE))
+                notificationContent = cursor8!!.getString(cursor8!!.getColumnIndex(Constants.APP_NOTIFICATION_CONTENT))
+                notificationImage = cursor8!!.getString(cursor8!!.getColumnIndex(Constants.APP_NOTIFICATION_IMAGE))
+                notificationTime = cursor8!!.getLong(cursor8!!.getColumnIndex(Constants.APP_NOTIFICATION_RECIEVED_AT))
 
 
                 notification.add(NotificationModel(notificationId,notificationTitle,notificationContent,notificationImage,notificationTime))
-                cursor.moveToNext()
+                cursor8!!.moveToNext()
             }
         }
         db.close()
@@ -392,32 +484,30 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getListOfInstallledAppUsageStats(): ArrayList<AppUsageStats> {
+        var cursor9: Cursor? = null
         val usageStats = ArrayList<AppUsageStats>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.APP_USAGE_STATS_TABLE, null)
+            cursor9 = db.rawQuery("select * from " + Constants.APP_USAGE_STATS_TABLE, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_APP_USAGE_STATS_TABLE)
             return ArrayList<AppUsageStats>()
         }
 
-        var deviceId: String
         var app_package_name: String
         var in_time :  Long
         var out_time : Long
         var app_total_time : Long
 
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                deviceId  = cursor.getString(cursor.getColumnIndex(Constants.DEVICE_ID))
-                app_package_name = cursor.getString(cursor.getColumnIndex(Constants.APP_PACKAGE_NAME))
-                in_time = cursor.getColumnIndex(Constants.APP_GET_FIRST_TIME_STAMP).toLong()
-                out_time = cursor.getColumnIndex(Constants.APP_GET_LAST_TIME_USED).toLong()
-                app_total_time = cursor.getColumnIndex(Constants.APP_FOREGROUND_TIME).toLong()
+        if (cursor9!!.moveToFirst()) {
+            while (cursor9!!.isAfterLast == false) {
+                app_package_name = cursor9!!.getString(cursor9!!.getColumnIndex(Constants.APP_PACKAGE_NAME))
+                in_time = cursor9!!.getLong(cursor9!!.getColumnIndex(Constants.APP_GET_FIRST_TIME_STAMP))
+                out_time = cursor9!!.getLong(cursor9!!.getColumnIndex(Constants.APP_GET_LAST_TIME_USED))
+                app_total_time = cursor9!!.getLong(cursor9!!.getColumnIndex(Constants.APP_FOREGROUND_TIME))
 
-                usageStats.add(AppUsageStats(deviceId,app_package_name,in_time,out_time,app_total_time))
-                cursor.moveToNext()
+                usageStats.add(AppUsageStats(app_package_name,in_time,out_time,app_total_time))
+                cursor9!!.moveToNext()
             }
         }
         db.close()
@@ -473,20 +563,20 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getAllClasses(): ArrayList<String> {
+        var cursorA: Cursor? = null
         val classes = ArrayList<String>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.CLASS_TABLE, null)
+            cursorA = db.rawQuery("select * from " + Constants.CLASS_TABLE, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_CLASS_TABLE)
             return ArrayList<String>()
         }
 
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                classes.add(cursor.getString(cursor.getColumnIndex(Constants.CLASS_NAME)))
-                cursor.moveToNext()
+        if (cursorA!!.moveToFirst()) {
+            while (cursorA!!.isAfterLast == false) {
+                classes.add(cursorA!!.getString(cursorA!!.getColumnIndex(Constants.CLASS_NAME)))
+                cursorA!!.moveToNext()
             }
         }
         db.close()
@@ -514,20 +604,20 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     fun getAllInternalClasses(): ArrayList<String> {
+        var cursorB: Cursor? = null
         val classes = ArrayList<String>()
         val db = writableDatabase
-        var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select * from " + Constants.ALL_CLASS_TABLE, null)
+            cursorB = db.rawQuery("select * from " + Constants.ALL_CLASS_TABLE, null)
         } catch (e: SQLiteException) {
             db.execSQL(SQL_CREATE_ALL_CLASS_TABLE)
             return ArrayList<String>()
         }
 
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                classes.add(cursor.getString(cursor.getColumnIndex(Constants.CLASS_NAME)))
-                cursor.moveToNext()
+        if (cursorB!!.moveToFirst()) {
+            while (cursorB!!.isAfterLast == false) {
+                classes.add(cursorB!!.getString(cursorB!!.getColumnIndex(Constants.CLASS_NAME)))
+                cursorB!!.moveToNext()
             }
         }
         db.close()
@@ -535,6 +625,7 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
     }
 
     companion object {
+       // var cursor: Cursor? = null
         val DATABASE_VERSION = 1
         val DATABASE_NAME = "foxpanda.db"
 
@@ -571,13 +662,14 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
 
         //TABLE FOR LIST OF APPS INSTALLED BY USER
         private val SQL_CREATE_LIST_OF_USER_INSTALLED_APP = "CREATE TABLE " + Constants.APP_INSTALLED_BY_USER_TABLE+ " (" +
-                Constants.DEVICE_ID + " TEXT,"+
                 Constants.APP_PACKAGE_NAME + " TEXT,"+
-                Constants.APP_INSTALLED_NAME + " TEXT)"
+                Constants.APP_INSTALLED_NAME + " TEXT,"+
+                Constants.APP_LAST_OPEN_AT + " INTEGER,"+
+                Constants.APP_INSTALLED_AT + " INTEGER,"+
+                Constants.APP_INSTALLED_VERSION + " TEXT)"
 
         //TABLE FOR USAGE STATS OF APP INSTALLED BY USER
         private val SQL_CREATE_APP_USAGE_STATS_TABLE = "CREATE TABLE " + Constants.APP_USAGE_STATS_TABLE+ " (" +
-                Constants.DEVICE_ID + " TEXT,"+
                 Constants.APP_PACKAGE_NAME + " TEXT,"+
                 Constants.APP_GET_FIRST_TIME_STAMP + " INTEGER,"+
                 Constants.APP_GET_LAST_TIME_USED + " INTEGER,"+
@@ -600,6 +692,25 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
                 Constants.APP_NOTIFICATION_RECIEVED_AT+ " INTEGER)"
 
 
+        //table for Panda Location
+        private val SQL_CREATE_PANDA_LOCATION_TABLE = "CREATE TABLE " + Constants.USER_LOCATION_TABLE+ " (" +
+                Constants.DEVICE_ID + " TEXT,"+
+                Constants.PANDA_LONGITUDE + " TEXT,"+
+                Constants.PANDA_LATITUDE + " TEXT,"+
+                Constants.PANDA_TIMESTAMP+ " INTEGER)"
+
+               //create table for intraction-coordinate
+       private val SQL_CREATE_USER_INTERACTION_COORDINATE_TABLE = "CREATE TABLE " + Constants.INTERACTION_COORDINATE_TABLE+ " (" +
+                       Constants.DEVICE_ID + " TEXT,"+
+                       Constants.FOX_ACTIVITY_NAME + " TEXT,"+
+                       Constants.FOX_LAYOUT_NAME + " TEXT,"+
+                       Constants.FOX_ORIENTATION + " INTEGER,"+
+                       Constants.FOX_DEVICE_HEIGHT + " INTEGER,"+
+                       Constants.FOX_DEVICE_WIDTH + " INTEGER,"+
+                       Constants.FOX_SCROLL_POSITION+ " INTEGER,"+
+                       Constants.FOX_MAX_SCROLL_POSITION + " INTEGER,"+
+                       Constants.FOX_INTERACTION_COORDINATE_X + " INTEGER,"+
+                       Constants.FOX_INTERACTION_COORDINATE_Y+ " INTEGER)"
 
 
 
@@ -622,6 +733,13 @@ internal class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABAS
         private val SQL_DELETE_NOTIFICATION_ACTION_TABLE = "DROP TABLE IF EXISTS" + Constants.NOTIFICATION_ACTION_TABLE
 
         private val SQL_DELETE_NOTIFICATION_LIST_TABLE = "DROP TABLE IF EXISTS" + Constants.NOTIFICATION_LIST_TABLE_NAME
+
+        private val SQL_DELETE_USER_INTERACTION_COORDINATE_TABLE = "DROP TABLE IF EXISTS" + Constants.INTERACTION_COORDINATE_TABLE
+
+        private val SQL_DELETE_PANDA_LOCATION_TABLE = "DROP TABLE IF EXISTS" + Constants.USER_LOCATION_TABLE
+
+
+
 
     }
 

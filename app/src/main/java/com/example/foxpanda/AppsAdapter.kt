@@ -1,6 +1,7 @@
 package com.example.foxpanda
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -49,15 +50,17 @@ class AppsAdapter(context:Context, list:List<String>): RecyclerView.Adapter<Apps
 
         viewHolder.cardView.setOnClickListener(object:View.OnClickListener{
             override fun onClick(view:View) {
-                val intent = context1.getPackageManager().getLaunchIntentForPackage(ApplicationPackageName)
-                if (intent != null)
-                {
-                    context1.startActivity(intent)
-                }
-                else
-                {
-                    Toast.makeText(context1, ApplicationPackageName + " Error, Please Try Again.", Toast.LENGTH_LONG).show()
-                }
+                //val intent = context1.getPackageManager().getLaunchIntentForPackage(ApplicationPackageName)
+                val intent = Intent(context1,SecondActivity::class.java)
+                context1.startActivity(intent)
+//                if (intent != null)
+//                {
+//                  //  context1.startActivity(intent)
+//                }
+//                else
+//                {
+//                    Toast.makeText(context1, ApplicationPackageName + " Error, Please Try Again.", Toast.LENGTH_LONG).show()
+//                }
             }
         })
     }

@@ -2,6 +2,7 @@ package com.sdk.foxpanda.utils
 
 import android.content.Context
 import android.provider.Settings
+import com.sdk.foxpanda.applications.FoxApplication
 import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.endpoint.Endpoint
 import okhttp3.OkHttpClient
@@ -26,7 +27,7 @@ internal object NetworkUtil {
             val request = original.newBuilder()
             request.header("Content-Type", "application/json")
             request.header("Accept", "application/json")
-            request.header("Fox-Platform","342874982374923847")
+            request.header("Fox-Platform",FoxApplication.instance.FoxPlatformID)
             request.header("Fox-Device",deviceID)
             val requestBuilder = request.build()
             chain.proceed(requestBuilder)

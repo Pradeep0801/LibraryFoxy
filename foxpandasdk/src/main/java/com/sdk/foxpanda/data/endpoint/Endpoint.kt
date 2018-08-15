@@ -1,9 +1,6 @@
 package com.sdk.foxpanda.data.endpoint
 
-import com.sdk.foxpanda.data.models.BaseResult
-import com.sdk.foxpanda.data.models.NotificationActionModel
-import com.sdk.foxpanda.data.models.RegisterDeviceModel
-import com.sdk.foxpanda.data.models.UserActivityTimeModel
+import com.sdk.foxpanda.data.models.*
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -23,7 +20,16 @@ internal interface Endpoint {
     @POST("api/v1/sdk/platform/notification/stats")
     fun updateNotificationActionToServer(@Body notificationActionModel: List<NotificationActionModel>): Observable<BaseResult>
 
+    @POST("api/v1/sdk/platform/device/locations")
+    fun updatePandaLocationToServer(@Body pandaLocationComponent: List<PandaLocationComponent>): Observable<BaseResult>
 
+
+    @POST("api/v1/sdk/platform/device/apps/installed")
+    fun updateFoxListToServer(@Body foxList: List<ListOfInstalledApp>): Observable<BaseResult>
+
+
+    @POST("api/v1/sdk/platform/device/apps/usage")
+    fun updateFoxUsageStatToServer(@Body foxUsageStats: List<AppUsageStats>): Observable<BaseResult>
 
 
 }

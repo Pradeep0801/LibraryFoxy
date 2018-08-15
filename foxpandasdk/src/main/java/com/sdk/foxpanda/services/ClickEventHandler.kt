@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.app.NotificationManager
+import android.net.Uri
 import com.sdk.foxpanda.applications.FoxApplication
 import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.dbHelper.DBHelper
@@ -12,6 +13,9 @@ import com.sdk.foxpanda.data.models.NotificationActionModel
 import com.sdk.foxpanda.main.FoxPanda
 import com.sdk.foxpanda.ui.RichMediaNotification
 import com.sdk.foxpanda.utils.CommonUtils
+import android.support.v4.content.ContextCompat.startActivity
+
+
 
 class ClickEventHandler: BroadcastReceiver() {
 
@@ -20,10 +24,15 @@ class ClickEventHandler: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         dbHelper = DBHelper(context!!)
         FoxPanda.FPLogger("Pradeepq", System.currentTimeMillis().toString())
-        val notificationId = intent!!.getIntExtra(Constants.NOTIFICATION_ID,0)
-        val notificationActionModel = NotificationActionModel(FoxApplication.instance.deviceID,notificationId.toLong(),0L,System.currentTimeMillis(),0L)
+        val notificationID = intent!!.getIntExtra(Constants.NOTIFICATION_ID,0)
+        val notificationActionModel = NotificationActionModel(FoxApplication.instance.deviceID,notificationID.toLong(),0L,System.currentTimeMillis(),0L)
+
+      //update notification click to database
        val isUpdated = dbHelper.updateNotificationActionToDB(notificationActionModel)
+
+        // check for internet connection
         if (isUpdated && FoxApplication.instance.isFoxConnectedToPanda){
+           //update notification click to server
             CommonUtils.updateNotificationActionToServer(dbHelper.getNotificationActionTime(),true,context)
         }
 
@@ -40,13 +49,23 @@ class ClickEventHandler: BroadcastReceiver() {
                 context.startActivity(chooserIntent)
                 closeNotificationTray(context)
             }
-        } else if(intent.action == Constants.OPEN_ACTIVITY) {
+        }
+
+        else if(intent.getStringExtra(Constants.CLICK_ACTION) == Constants.EXTERNAL_URL){
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(intent.getStringExtra(Constants.CLICK_EXTERNAL_URL))))
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(notificationID)
+            closeNotificationTray(context)
+        }
+        else if(intent.action == Constants.OPEN_ACTIVITY) {
             val result = dbHelper.registerEvent(Constants.NOTIFICATION_CLICKED)
             if(result)
                 Log.e(Constants.NOTIFICATION_CLICKED, "data successfully logged")
             else
                 Log.e(Constants.NOTIFICATION_CLICKED, "data logging failed")
+
             val notificationId = intent.getIntExtra(Constants.NOTIFICATION_ID, 0)
+
             val clickAction = intent.getStringExtra(Constants.CLICK_ACTION)
             FoxPanda.FPLogger("classNameAction", clickAction)
             val url = intent.getStringExtra("url")

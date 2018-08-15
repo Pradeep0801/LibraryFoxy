@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@color/colorWhite"
-    android:weightSum="5"
     android:id="@+id/noti_ll"
-    android:layout_height="60dp">
-
-    <ImageView
-        android:scaleType="centerCrop"
-        android:id="@+id/app_icon"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"/>
-
+    android:padding="10dp"
+    android:layout_height="80dp">
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:padding="10dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
+        android:orientation="horizontal">
+        <ImageView
+            android:scaleType="centerInside"
+            android:id="@+id/noti_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
+        <LinearLayout
+            android:paddingLeft="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/noti_title"
-            android:textSize="15dp"
-            android:text="Title"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/colorBlack" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_marginRight="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/noti_title"
+                    android:textSize="16dp"
+                    android:text="Title"
+                    android:maxLines="1"
+                    android:fontFamily="sans-serif-regular"
+                    android:ellipsize="end"
+                    android:textColor="@color/colorBlack"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorBlack"
-            android:id="@+id/noti_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:text="Content"
-            android:textSize="13dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/noti_time"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorBlack" />
 
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColor"
+                android:id="@+id/noti_content"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textSize="14dp"/>
+        </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:id="@+id/noti_time"
-        android:text="12:30pm"
-        android:textSize="13dp"
-        android:gravity="center"
-        android:textColor="@color/colorBlack" />
-
 </LinearLayout>

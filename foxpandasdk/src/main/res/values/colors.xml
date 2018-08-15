@@ -3,4 +3,5 @@
     <color name="colorNotification">#ff2a68</color>
     <color name="colorWhite">#fff</color>
     <color name="colorBlack">#000</color>
+    <color name="textColor">#808080</color>
 </resources>

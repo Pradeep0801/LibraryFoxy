@@ -1,5 +1,6 @@
 package com.example.foxpanda
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
@@ -13,12 +14,19 @@ import com.sdk.foxpanda.main.FoxPanda
 import java.util.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import java.net.HttpURLConnection
 import java.net.URL
 import android.os.StrictMode
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.VelocityTrackerCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
+import android.view.*
+import android.widget.RelativeLayout
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,15 +37,18 @@ class MainActivity : AppCompatActivity() {
     var recyclerView: RecyclerView? = null
     var adapter: RecyclerView.Adapter<*>? = null
     var recyclerViewLayoutManager: RecyclerView.LayoutManager? = null
+  // lateinit var rLayout : RelativeLayout
     companion object {
         var uniqueID : String? = null
        var  PREF_UNIQUE_ID : String = "PREF_UNIQUE_ID"
+        private val DEBUG_TAG = "Velocity"
+        private var mVelocityTracker: VelocityTracker? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        FoxPanda.initialize(this)
+        FoxPanda.initialize(this,"342874982374923847")
         AppBackgroundHelper.init(myApp,this)
 
         val notification = FoxPanda.getNotificationList(this)
@@ -51,6 +62,7 @@ class MainActivity : AppCompatActivity() {
        // scheduleNotification(getNotification("Test Schedule Notification"), 5000);
 
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        //rLayout = findViewById(R.id.rl)
 
         // Passing the column number 1 to show online one column in each row.
         recyclerViewLayoutManager = GridLayoutManager(this, 1)
@@ -65,6 +77,8 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+
 
     @Synchronized fun id(context:Context):String {
         if (uniqueID == null)
@@ -94,15 +108,15 @@ class MainActivity : AppCompatActivity() {
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent)
     }
 
-    private fun getNotification(content: String): Notification {
-        val icon = BitmapFactory.decodeResource(resources, R.drawable.large_icon)
-        val builder = Notification.Builder(this)
-        builder.setContentTitle("Scheduled Notification")
-        builder.setContentText(content)
-        builder.setSmallIcon(R.drawable.app_icon)
-        //builder.setLargeIcon(getBitmapfromUrl("https://s3-us-west-2.amazonaws.com/foxpanda-documentavion/documentation/android/IMG-20180717-WA0006.png"))
-        return builder.build()
-    }
+//    private fun getNotification(content: String): Notification {
+//        val icon = BitmapFactory.decodeResource(resources, R.drawable.large_icon)
+//        val builder = Notification.Builder(this)
+//        builder.setContentTitle("Scheduled Notification")
+//        builder.setContentText(content)
+//        builder.setSmallIcon(R.drawable.app_icon)
+//        //builder.setLargeIcon(getBitmapfromUrl("https://s3-us-west-2.amazonaws.com/foxpanda-documentavion/documentation/android/IMG-20180717-WA0006.png"))
+//        return builder.build()
+//    }
 
 
 
@@ -120,4 +134,10 @@ class MainActivity : AppCompatActivity() {
             return null
         }
     }
+
+
+
+
+
+
 }

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.jfrog.bintray'
 
 group='com.github.PradeepFox'
 android {
@@ -47,6 +48,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     api "android.arch.work:work-runtime-ktx:1.0.0-alpha05"
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'pub.devrel:easypermissions:1.3.0'
 }
 
 repositories {
@@ -54,3 +58,56 @@ repositories {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+//def projectVersionCodeNr = Integer.parseInt(projectVersionCode);
+//def libGit = libGit;
+//def libUrl = libUrl;
+//def libDescription = libDescription
+//def libGroupId = libGroupId;
+//def libArtifactId = libArtifactId;
+//
+//// for Maven
+//group = libGroupId
+//version = projectVersionName
+//install {
+//    repositories.mavenInstaller {
+//        pom.project {
+//            name libArtifactId
+//            description libDescription
+//            url libUrl
+//            inceptionYear '2016'
+//
+//            packaging 'aar'
+//            groupId libGroupId
+//            artifactId libArtifactId
+//            version projectVersionName
+//
+//            licenses {
+//                license {
+//                    name 'MIT'
+//                    url libLicenseUrl
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//bintray {
+//    user = bintray_user
+//    key = bintray_apikey
+//    pkg {
+//        repo = libGroupId
+//        name = libArtifactId
+//        userOrg = bintray_user_org
+//        licenses = ['MIT']
+//        vcsUrl = libGit
+//        version {
+//            name = projectVersionName
+//            gpg {
+//               // sign = true
+//               // passphrase = bintray_gpg_phrase
+//            }
+//        }
+//    }
+//    configurations = ['archives']
+//}

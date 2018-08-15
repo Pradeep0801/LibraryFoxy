@@ -1,27 +1,28 @@
 package com.sdk.foxpanda.data.models
 
 import android.graphics.drawable.Drawable
+import com.google.gson.annotations.SerializedName
 
-internal data class FirebaseInfo(
+data class FirebaseInfo(
     var token: String = "",
     var deviceId: String = "",
     var eventName: String = ""
 )
 
-internal data class BaseResult(
+ data class BaseResult(
     var message: String = "",
     var code: String = "",
     var status: Boolean = false
 )
 
-internal data class ErrorModel(
+data class ErrorModel(
     var errorCode: Int,
     var errors: String,
     var error: String,
     var message: String
 )
 
-internal data class  DeviceInfoModel(
+data class  DeviceInfoModel(
 var d_name : String = "",//
 var d_manufacturer : String = "",//
 var d_os : String = "",//
@@ -47,40 +48,43 @@ var d_year : String = "",//
 //var token : String = ""
 var d_language : String = ""//
 )
-
-internal data class RegisterDeviceModel(
+ data class RegisterDeviceModel(
         var token: String = "",
         var deviceData: DeviceInfoModel
 
 )
 
-internal data class  UserActivityTimeModel(
+ data class  UserActivityTimeModel(
         var in_time : Long = 0L,
         var out_time : Long = 0L
 )
 
-internal data class AppPackageInfo(
+ data class AppPackageInfo(
         var packageName : String = "",
         var packageAppName : String = "",
         var packageAppIcon : Drawable? = null
 
 )
 
-internal data class AppUsageStats(
-        var device_id : String = "",
+ data class AppUsageStats(
+         @SerializedName("appPackageName")
         var app_package_name : String = "",
+        @SerializedName("fInTime")
         var in_time: Long = 0L,
+        @SerializedName("fOutTime")
         var out_time : Long = 0L,
         var app_total_time : Long = 0L
 )
-
-internal data class ListOfInstalledApp(
-        var device_id : String = "",
+ data class ListOfInstalledApp(
+         @SerializedName("appPackageName")
         var app_package_name : String = "",
-        var app_installed_name : String = ""
+        var app_installed_name : String = "",
+        var installedAt : Long = 0L,
+        var appVersion: String = "",
+        var lastOpenedAt : Long = 0L
 )
 
-internal data class NotificationActionModel(
+ data class NotificationActionModel(
         var device_id: String = "",
         var notificationId : Long = 0L,
         var receivedAt : Long = 0L,
@@ -94,4 +98,29 @@ data class NotificationModel(
         var notificationContent : String = "",
         var notificationImage : String = "",
         var notificationTime : Long = 0L
+)
+data class FoxScreenResolutionModel(
+    var fpDeviceHeight : Int = 0,
+    var fpDeviceWidth : Int = 0
+)
+data class FoxScreenIntractionModel (
+        var fpActivityName : String = "",
+        var fpDevice_id: String = "",
+        var fpOrientation : Int = 0,
+        var fpCoordinateX : Int = 0,
+        var fpCoordinateY : Int = 0
+)
+data class FoxScreenScrollPositionModel(
+        var fpViewType : String = "",
+        var fpScrollPosition : Int = 0,
+        var fpMaxScrollPosition: Int = 0
+
+)
+data class PandaLocationComponent(
+        @SerializedName("lat")
+        var pandaLongitude : String = "",
+        @SerializedName("lng")
+        var pandaLatitude : String = "",
+        @SerializedName("ts")
+        var pandaTimeStamp : String = ""
 )
