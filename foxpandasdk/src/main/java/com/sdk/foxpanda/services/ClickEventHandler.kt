@@ -56,15 +56,15 @@ class ClickEventHandler: BroadcastReceiver() {
         }
         else if(intent.action == Constants.OPEN_ACTIVITY) {
             val result = dbHelper.registerEvent(Constants.NOTIFICATION_CLICKED)
-            if(result)
-                Log.e(Constants.NOTIFICATION_CLICKED, "data successfully logged")
-            else
-                Log.e(Constants.NOTIFICATION_CLICKED, "data logging failed")
+//            if(result)
+//                Log.e(Constants.NOTIFICATION_CLICKED, "data successfully logged")
+//            else
+//                Log.e(Constants.NOTIFICATION_CLICKED, "data logging failed")
 
             val notificationId = intent.getIntExtra(Constants.NOTIFICATION_ID, 0)
 
             val clickAction = intent.getStringExtra(Constants.CLICK_ACTION)
-            FoxPanda.FPLogger("classNameAction", clickAction)
+           // FoxPanda.FPLogger("classNameAction", clickAction)
             val url = intent.getStringExtra("url")
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if(clickAction != null) {

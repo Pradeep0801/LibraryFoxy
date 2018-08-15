@@ -15,11 +15,6 @@ class FCMService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
         dbHelper = DBHelper(this)
         val result = dbHelper.registerEvent(Constants.NOTIFICATION_RECEIVED)
-        if(result)
-            FoxPanda.FPLogger(Constants.NOTIFICATION_RECEIVED, "data successfully logged")
-        else
-            FoxPanda.FPLogger(Constants.NOTIFICATION_RECEIVED, "data logging failed")
-
         val notificationManager = FPNotificationManager(this, remoteMessage!!)
         notificationManager.showNotification()
     }

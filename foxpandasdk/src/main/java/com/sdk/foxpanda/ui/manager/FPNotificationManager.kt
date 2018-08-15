@@ -52,7 +52,7 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
         val notificationModel = NotificationModel(notificationId.toLong(),remoteMessage.data.get(Constants.TITLE)!!,remoteMessage.data.get(Constants.CONTENT)!!,remoteMessage.data.get(Constants.MEDIA_URL)!!,System.currentTimeMillis())
         val list = dbHelper.saveNotificationList(notificationModel)
         if (list){
-            FoxPanda.FPLogger("Hey","Saved notification")
+           // FoxPanda.FPLogger("Hey","Saved notification")
         }
 
         notificationManagerManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -66,7 +66,7 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
             val sortedStrings = strings.reversed()
             sortedStrings.forEach {
                 val className = Constants.getClassName(it)
-                FoxPanda.FPLogger("className", "$className $it")
+                        // FoxPanda.FPLogger("className", "$className $it")
                 try {
                     val cls = Class.forName(Constants.NOTIFICATION_PATH + className)
                     val cons = cls.getConstructor(Context::class.java, RemoteMessage::class.java)
@@ -78,8 +78,8 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
                     notifyNotification(false)
                     return
                 } catch (e: ClassNotFoundException) {
-                    FoxPanda.FPLogger("Naah", "It aint working")
-                    e.printStackTrace()
+                    //FoxPanda.FPLogger("Naah", "It aint working")
+                    //e.printStackTrace()
                 }
             }
         }
@@ -133,16 +133,17 @@ internal class FPNotificationManager(var context: Context, var remoteMessage: Re
         val notificationBuilder = buildNotification(context, pendingIntent, delPendingIntent,isDefault)
         notificationManagerManager!!.notify(notificationId, notificationBuilder.build())
         val result = dbHelper.registerEvent(Constants.NOTIFICATION_DISPLAYED)
-        FoxPanda.FPLogger("Pradeep1", System.currentTimeMillis().toString())
+       // FoxPanda.FPLogger("Pradeep1", System.currentTimeMillis().toString())
         var notificationActionModel = NotificationActionModel(FoxApplication.instance.deviceID,notificationId.toLong(),System.currentTimeMillis(),0L,0L)
 
         val foxAction = dbHelper.saveNotificationAction(notificationActionModel)
-
-        if (foxAction)
-            FoxPanda.FPLogger(Constants.NOTIFICATION_DISPLAYED, "data successfully logged")
-        else
-            FoxPanda.FPLogger(Constants.NOTIFICATION_DISPLAYED, "data logging failed")
-    }
+//
+//        if (foxAction)
+//          //  FoxPanda.FPLogger(Constants.NOTIFICATION_DISPLAYED, "data successfully logged")
+//        else
+//           // FoxPanda.FPLogger(Constants.NOTIFICATION_DISPLAYED, "data logging failed")
+//
+}
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun setupChannels() {

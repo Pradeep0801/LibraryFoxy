@@ -15,7 +15,7 @@ class DeleteEventHandler : BroadcastReceiver(){
 
     override fun onReceive(p0: Context?, p1: Intent?) {
         val db = DBHelper(p0!!)
-        FoxPanda.FPLogger("Pradeep", System.currentTimeMillis().toString())
+       // FoxPanda.FPLogger("Pradeep", System.currentTimeMillis().toString())
         val notificationId = p1!!.getIntExtra(Constants.APP_NOTIFICATION_ID,0)
 
         val notificationActionModel = NotificationActionModel(FoxApplication.instance.deviceID,notificationId.toLong(),0L,0L,System.currentTimeMillis())

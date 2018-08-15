@@ -66,16 +66,16 @@ internal open class LeftNotification(var context: Context, var remoteMessage: Re
     }
 
     fun initOpenIntent(context: Context, views: RemoteViews, notificationId: Int, activity: String,clickActionUrl: String) {
-        FoxPanda.FPLogger("open_at",System.currentTimeMillis().toString())
+       // FoxPanda.FPLogger("open_at",System.currentTimeMillis().toString())
         if(activity.equals(Constants.RICH_MEDIA) || activity.equals(Constants.EXTERNAL_URL))
             setOpenPendingIntent(context, views, notificationId, activity,clickActionUrl)
         else {
             val classes = db.getAllClasses()
             classes.forEach {
                 val className = it.split(".").reversed()
-                FoxPanda.FPLogger("actName", className[0].capitalize() +"\n")
+              //  FoxPanda.FPLogger("actName", className[0].capitalize() +"\n")
                 if(className[0].equals(clickActionUrl,true)) {
-                    FoxPanda.FPLogger("actName1", clickActionUrl.capitalize() +"\n")
+                //    FoxPanda.FPLogger("actName1", clickActionUrl.capitalize() +"\n")
                     setOpenPendingIntent(context, views, notificationId, it,"")
                     return
                 }
@@ -87,7 +87,7 @@ internal open class LeftNotification(var context: Context, var remoteMessage: Re
     }
 
     private fun setOpenPendingIntent(context: Context, views: RemoteViews, notificationId: Int, activity: String,clickActionUrl:String) {
-        FoxPanda.FPLogger("yay", activity)
+      //  FoxPanda.FPLogger("yay", activity)
         val openNotificationIntent = Intent(context, ClickEventHandler::class.java)
         openNotificationIntent.action = Constants.OPEN_ACTIVITY
         openNotificationIntent.putExtra(Constants.NOTIFICATION_ID, notificationId)

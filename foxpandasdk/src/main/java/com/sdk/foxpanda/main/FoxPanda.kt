@@ -47,7 +47,7 @@ class FoxPanda {
 
     companion object {
         private const val TAG = "DBElements"
-        val foxListening = FoxListening()
+       // val foxListening = FoxListening()
         val REQUEST_ID_MULTIPLE_PERMISSIONS = 1
         val REQUEST_APP_USAGE_PERMISSIONS = 2
         var handler = Handler()
@@ -228,7 +228,7 @@ class FoxPanda {
         }
 
         internal fun FPLogger(tag: String, message: String) {
-            Log.e(tag, message)
+          //  Log.e(tag, message)
         }
 
 
