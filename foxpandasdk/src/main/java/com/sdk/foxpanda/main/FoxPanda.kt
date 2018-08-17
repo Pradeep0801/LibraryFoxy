@@ -72,18 +72,18 @@ class FoxPanda {
 
 
 
-            if(EasyPermissions.hasPermissions(context, *PandaShowLocationToFox.STORAGE) && !CommonUtils.pandaHasUsagePermission(context)){
-                        CommonUtils.pandaAskForUsagePermission(context)
-                    }
-            else{
-                val myWorkBuilder1 = PeriodicWorkRequestBuilder<FoxWorkManager>(5, TimeUnit.HOURS)
-                val myWork1 = myWorkBuilder1.build()
-                WorkManager.getInstance().enqueue(myWork1)
-            }
+//            if(EasyPermissions.hasPermissions(context, *PandaShowLocationToFox.STORAGE) && !CommonUtils.pandaHasUsagePermission(context)){
+//                        CommonUtils.pandaAskForUsagePermission(context)
+//                    }
+//            else{
+//                val myWorkBuilder1 = PeriodicWorkRequestBuilder<FoxWorkManager>(5, TimeUnit.HOURS)
+//                val myWork1 = myWorkBuilder1.build()
+//                WorkManager.getInstance().enqueue(myWork1)
+//            }
 
 
             if (db.getIsInfoUpdated() == 1) {
-                print("token already updated")
+                Log.e("token already updated","-----")
             } else {
                 val token = db.getToken()
                 val isConnected = FoxApplication.instance.isFoxConnectedToPanda

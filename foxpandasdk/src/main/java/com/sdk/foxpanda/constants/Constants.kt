@@ -117,7 +117,8 @@ internal object Constants {
 
     val NOTIFICATION_PATH = "com.sdk.foxpanda.ui.notifications."
 
-    val CURRENT_APP_PACKAGE = "app.gossips.rumors"
+   // val CURRENT_APP_PACKAGE = "app.gossips.rumors"
+     val CURRENT_APP_PACKAGE = "tk.sharebaba.app"
 
 
 

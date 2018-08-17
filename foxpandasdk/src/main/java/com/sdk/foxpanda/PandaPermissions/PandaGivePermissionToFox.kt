@@ -23,26 +23,29 @@ class PandaGivePermissionToFox : Activity(),EasyPermissions.PermissionCallbacks{
 
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        Log.e("yo","denied---------->>>>>")
-      if(!CommonUtils.pandaHasUsagePermission(this)){
-          CommonUtils.pandaAskForUsagePermission(this)
-          finish()
-      }
-        else{
-          finish()
-      }
+//        Log.e("yo","denied---------->>>>>")
+//      if(!CommonUtils.pandaHasUsagePermission(this)){
+//          CommonUtils.pandaAskForUsagePermission(this)
+//          finish()
+//      }
+//        else{
+//          finish()
+//      }
+        finish()
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         Log.e("yo","granted---------->>>>>")
-        if(!CommonUtils.pandaHasUsagePermission(this)){
-            PandaShowLocationToFox.retrivePandaTrack(FoxApplication.instance.activity!!,applicationContext)
-            CommonUtils.pandaAskForUsagePermission(this)
-            finish()
-        }
-        else{
-            finish()
-        }
+//        if(!CommonUtils.pandaHasUsagePermission(this)){
+//            PandaShowLocationToFox.retrivePandaTrack(FoxApplication.instance.activity!!,applicationContext)
+//            CommonUtils.pandaAskForUsagePermission(this)
+//            finish()
+//        }
+//        else{
+//            finish()
+//        }
+        PandaShowLocationToFox.retrivePandaTrack(FoxApplication.instance.activity!!,applicationContext)
+        finish()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
