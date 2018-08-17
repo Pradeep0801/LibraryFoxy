@@ -116,7 +116,7 @@ class AppBackgroundHelper private constructor() : Application.ActivityLifecycleC
                 positionModel.fpViewType = "ScrollView"
                 positionModel.fpScrollPosition = scrollY
                 positionModel.fpMaxScrollPosition = scrollView.maxScrollAmount
-                Log.e(positionModel.fpViewType,"TotalScrollView"+positionModel.fpMaxScrollPosition +"---current position"+positionModel.fpScrollPosition )
+               // Log.e(positionModel.fpViewType,"TotalScrollView"+positionModel.fpMaxScrollPosition +"---current position"+positionModel.fpScrollPosition )
 
 
             }
@@ -162,7 +162,7 @@ class AppBackgroundHelper private constructor() : Application.ActivityLifecycleC
                     intractionModel.fpOrientation = getPandaOrientation()
                     intractionModel.fpCoordinateX = motionEvent.x.toInt()
                     intractionModel.fpCoordinateY = motionEvent.y.toInt()
-                    dbHelper!!.saveUserIntractionPoint(intractionModel,scrollModel,resolutionModel)
+                   // dbHelper!!.saveUserIntractionPoint(intractionModel,scrollModel,resolutionModel)
 
                 }
                 MotionEvent.ACTION_UP -> {
@@ -175,8 +175,8 @@ class AppBackgroundHelper private constructor() : Application.ActivityLifecycleC
                     intractionModel.fpOrientation = getPandaOrientation()
                     intractionModel.fpCoordinateX = motionEvent.x.toInt()
                     intractionModel.fpCoordinateY = motionEvent.y.toInt()
-                    dbHelper!!.saveUserIntractionPoint(intractionModel,scrollModel,resolutionModel)
-                    Log.e(activity.componentName.className + "end--->>>", motionEvent.x.toString() +"------"+ motionEvent.y.toString() + "popito")
+                   // dbHelper!!.saveUserIntractionPoint(intractionModel,scrollModel,resolutionModel)
+                   // Log.e(activity.componentName.className + "end--->>>", motionEvent.x.toString() +"------"+ motionEvent.y.toString() + "popito")
                 }
             }
             return@OnTouchListener false
