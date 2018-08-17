@@ -54,7 +54,10 @@ internal object CommonUtils {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     if (result != null) {
-                        dbHelper.saveIsInfoUpdated(1)
+                        if(result.status){
+                            dbHelper.saveIsInfoUpdated(1)
+                        }
+
                         Log.e("result",result.message)
                     }
                 }, this::handleError))
