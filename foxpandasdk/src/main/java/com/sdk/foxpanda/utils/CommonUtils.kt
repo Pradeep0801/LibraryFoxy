@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.provider.Settings
 import android.support.annotation.RequiresApi
+import android.text.TextUtils
 import android.util.Log
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -22,6 +23,7 @@ import com.sdk.foxpanda.R
 import com.sdk.foxpanda.WorkManager.FoxWorkManager
 import com.sdk.foxpanda.WorkManager.LocationWorkManager
 import com.sdk.foxpanda.applications.FoxApplication
+import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.dbHelper.DBHelper
 import com.sdk.foxpanda.data.models.*
 import com.sdk.foxpanda.main.FoxPanda
@@ -315,7 +317,7 @@ internal object CommonUtils {
             val activityInfo = resolveInfo.activityInfo
             if (!isSystemPackage(resolveInfo)) {
                 ApkPackageName.add(activityInfo.applicationInfo.packageName)
-                Log.e("appname",activityInfo.applicationInfo.packageName)
+               // Log.e("appname",activityInfo.applicationInfo.packageName)
 
             }
         }
@@ -357,7 +359,7 @@ internal object CommonUtils {
     private fun getStartTime(): Long {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, -1)
-        Log.e("calendar", calendar.timeInMillis.toString())
+        //Log.e("calendar", calendar.timeInMillis.toString())
         return calendar.timeInMillis
     }
 
@@ -365,7 +367,7 @@ internal object CommonUtils {
   fun getDrawableIconFromPackage(context: Context,name:String) : Int{
       val resources = context.getResources()
       val resourceId = resources.getIdentifier(name, "drawable",
-              "in.foxpanda.rumors.rumors")
+              Constants.CURRENT_APP_PACKAGE)
 
       if (resourceId != null && resourceId > 0){
           return resourceId
@@ -374,5 +376,27 @@ internal object CommonUtils {
           return (R.mipmap.ic_launcher)
       }
 
+    }
+
+    fun isLocationEnabled(context:Context):Boolean {
+        var locationMode = 0
+        val locationProviders:String
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            try
+            {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE)
+            }
+            catch (e: Settings.SettingNotFoundException) {
+                e.printStackTrace()
+                return false
+            }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF
+        }
+        else
+        {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
+            return !TextUtils.isEmpty(locationProviders)
+        }
     }
 }

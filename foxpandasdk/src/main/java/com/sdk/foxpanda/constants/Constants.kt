@@ -115,6 +115,8 @@ internal object Constants {
 
     val NOTIFICATION_PATH = "com.sdk.foxpanda.ui.notifications."
 
+    val CURRENT_APP_PACKAGE = "app.gossips.rumors"
+
 
 
 
@@ -132,9 +134,13 @@ internal object Constants {
             "COVER_MEDIA" ->{
                 return "LeftNotification"
             }
-            "right" -> {
+            "TWO_COLUMN_RIGHT " -> {
                 return "LeftNotification"
             }
+            "TWO_COLUMN_LEFT " -> {
+                return "LeftNotification"
+            }
+
 
         }
         return "DefaultNotification"

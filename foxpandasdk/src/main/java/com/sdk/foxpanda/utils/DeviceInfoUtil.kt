@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager
 import android.text.format.Formatter
 import android.app.ActivityManager
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
 import android.support.annotation.RequiresApi
@@ -18,6 +19,8 @@ import android.telephony.TelephonyManager
 import java.io.File
 import java.text.SimpleDateFormat
 import com.facebook.device.yearclass.YearClass
+import com.sdk.foxpanda.BuildConfig
+import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.models.DeviceInfoModel
 import kotlin.jvm.java
 
@@ -26,7 +29,7 @@ internal object DeviceInfoUtil {
     fun getDeviceInfo(context: Context): DeviceInfoModel {
         val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         var deviceInfoModel : DeviceInfoModel = DeviceInfoModel()
-        //deviceInfoModel.app_version = BuildConfig.VERSION_NAME
+        deviceInfoModel.sdk_version = BuildConfig.VERSION_NAME
        // deviceInfoModel.device_id = android.provider.Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
            deviceInfoModel.d_internal_storage = totalMemory().toString()
@@ -55,10 +58,18 @@ internal object DeviceInfoUtil {
         //deviceInfoModel.timezone = timeZone()
        // deviceInfoModel.user_langauge = Locale.getDefault().getDisplayLanguage()
        // deviceInfoModel.token = FirebaseInstanceId.getInstance().token.toString()
-            deviceInfoModel.d_language = Locale.getDefault().getDisplayLanguage()
+        deviceInfoModel.d_language = Locale.getDefault().getDisplayLanguage()
         deviceInfoModel.d_os = Build.VERSION_CODES::class.java.fields[android.os.Build.VERSION.SDK_INT].name
         deviceInfoModel.d_os_version = Build.VERSION.RELEASE
         deviceInfoModel.d_name = deviceName
+        try
+        {
+            val pInfo = context.getPackageManager().getPackageInfo(Constants.CURRENT_APP_PACKAGE, 0)
+            deviceInfoModel.app_version = pInfo.versionName
+        }
+        catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
         return deviceInfoModel
     }
 

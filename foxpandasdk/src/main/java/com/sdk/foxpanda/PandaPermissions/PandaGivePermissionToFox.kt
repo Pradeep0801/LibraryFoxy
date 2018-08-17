@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.annotation.NonNull
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.sdk.foxpanda.applications.FoxApplication
 import com.sdk.foxpanda.utils.CommonUtils
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -35,6 +36,7 @@ class PandaGivePermissionToFox : Activity(),EasyPermissions.PermissionCallbacks{
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         Log.e("yo","granted---------->>>>>")
         if(!CommonUtils.pandaHasUsagePermission(this)){
+            PandaShowLocationToFox.retrivePandaTrack(FoxApplication.instance.activity!!,applicationContext)
             CommonUtils.pandaAskForUsagePermission(this)
             finish()
         }

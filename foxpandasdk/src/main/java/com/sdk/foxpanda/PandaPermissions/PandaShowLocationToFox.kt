@@ -32,19 +32,25 @@ internal object  PandaShowLocationToFox {
     {
         val dbHelper = DBHelper(context)
         if (EasyPermissions.hasPermissions(context, *STORAGE)) {
+            if (CommonUtils.isLocationEnabled(context)){
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
             fusedLocationClient.lastLocation
                     .addOnSuccessListener { location : Location? ->
                         // Got last known location. In some rare situations this can be null.
-                        Log.e("Current LocationLat",location!!.latitude.toString())
-                        Log.e("Current LocationLong",location.longitude.toString())
-                        val pandaLocationComponent = PandaLocationComponent(location.longitude.toString(),location.latitude.toString(), CommonUtils.getCurrentEpochTime().toString())
-                        val pandaTracked =  dbHelper.savePandaLocation(pandaLocationComponent)
-                        if (pandaTracked && FoxApplication.instance.isFoxConnectedToPanda){
-                            val pandaFootPrint = dbHelper.getLazyPandaLocationTrack()
-                            CommonUtils.updatePandaLocationFox(pandaFootPrint,true,context)
-                        }
+                       // Log.e("Current LocationLat",location!!.latitude.toString())
+                      //  Log.e("Current LocationLong",location.longitude.toString())
 
+                            val lat = location!!.latitude
+                            val lng = location.longitude
+                            if (lat != null && lng != null){
+                                val pandaLocationComponent = PandaLocationComponent(lng.toString(),lat.toString(), CommonUtils.getCurrentEpochTime().toString())
+                                val pandaTracked =  dbHelper.savePandaLocation(pandaLocationComponent)
+                                if (pandaTracked && FoxApplication.instance.isFoxConnectedToPanda){
+                                    val pandaFootPrint = dbHelper.getLazyPandaLocationTrack()
+                                    CommonUtils.updatePandaLocationFox(pandaFootPrint,true,context)
+                                }
+                            }
+                        }
                     }
 
         } else {

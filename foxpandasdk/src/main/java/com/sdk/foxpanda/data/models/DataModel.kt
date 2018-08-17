@@ -46,7 +46,9 @@ var d_year : String = "",//
 //var timezone : String = "",
 //var user_langauge : String = ""
 //var token : String = ""
-var d_language : String = ""//
+var d_language : String = "",
+var app_version : String = "",
+var sdk_version : String = ""
 )
  data class RegisterDeviceModel(
         var token: String = "",
@@ -117,9 +119,9 @@ data class FoxScreenScrollPositionModel(
 
 )
 data class PandaLocationComponent(
-        @SerializedName("lat")
-        var pandaLongitude : String = "",
         @SerializedName("lng")
+        var pandaLongitude : String = "",
+        @SerializedName("lat")
         var pandaLatitude : String = "",
         @SerializedName("ts")
         var pandaTimeStamp : String = ""
