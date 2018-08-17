@@ -55,8 +55,14 @@ class FoxPanda {
 
 
         fun initialize(context: Context,foxPlatFormID : String) {
+            val db = DBHelper(context)
             FoxApplication.instance.deviceID = android.provider.Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID)
             FoxApplication.instance.FoxPlatformID = foxPlatFormID
+            db.deletePlatFormID()
+            db.savePlatFormID(foxPlatFormID)
+//            if(savedPID){
+//              //  Log.e("Saved",db.getPlatFormID())
+//            }
             NetworkUtil.initRetrofit(true, Constants.DEFAULT_LOG_LEVEL, context)
 
 
@@ -76,65 +82,6 @@ class FoxPanda {
             }
 
 
-
-
-
-
-
-
-//            handler.postDelayed({
-//                Log.d(TAG, "run: 1")
-//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-//                {
-//                    Log.d(TAG, "run: 2")
-//                    handler.removeCallbacksAndMessages(null)
-//                }
-//                if (foxListening.isAccessGranted(context))
-//                {
-//                    Log.d(TAG, "run: 3")
-//                    //You have the permission, re-launch MainActivity
-//                    Log.d(TAG, "run: 4")
-//                    retrieveStats(context)
-//                    handler.removeCallbacksAndMessages(null)
-//
-//                }
-//            }, 10000)
-
-//             checkSettingOn = object:Runnable {
-//                @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-//                public override//@TargetApi(23)
-//                fun run() {
-//                    Log.d(TAG, "run: 1")
-//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-//                    {
-//                        Log.d(TAG, "run: 2")
-//                        return
-//                    }
-//                    if (foxListening.isAccessGranted(context))
-//                    {
-//                        Log.d(TAG, "run: 3")
-//                        //You have the permission, re-launch MainActivity
-//                        Log.d(TAG, "run: 4")
-//                        retrieveStats(context)
-//
-//
-//                    }
-//                    handler.postDelayed(this, 2000)
-//                }
-//            }
-            // check for permission used by SDK
-//            if(!foxListening.isAccessGranted(context)) {
-//                val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-//                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-//                context.startActivity(intent)
-//            }
-//
-//
-
-
-            val db = DBHelper(context)
             if (db.getIsInfoUpdated() == 1) {
                 print("token already updated")
             } else {

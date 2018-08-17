@@ -29,6 +29,7 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         db.execSQL(SQL_CREATE_NOTIFICATION_LIST_TABLE)
         db.execSQL(SQL_CREATE_USER_INTERACTION_COORDINATE_TABLE)
         db.execSQL(SQL_CREATE_PANDA_LOCATION_TABLE)
+        db.execSQL(SQL_CREATE_PLATFORM_ID)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
@@ -44,6 +45,7 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         db.execSQL(SQL_DELETE_USER_INTERACTION_COORDINATE_TABLE)
         db.execSQL(SQL_DELETE_NOTIFICATION_LIST_TABLE)
         db.execSQL(SQL_DELETE_PANDA_LOCATION_TABLE)
+        db.execSQL(SQL_DELETE_PLATFORM_ID_TABLE)
         onCreate(db)
     }
 
@@ -55,6 +57,18 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         value.put(Constants.FIREBASE_TOKEN, token)
 
         val result = db.insert(Constants.TOKEN_TABLE, null, value)
+        db.close()
+        return result.toInt() != -1
+    }
+
+    @Throws(SQLiteConstraintException::class)
+    fun savePlatFormID(platfomID: String): Boolean {
+        val db = writableDatabase
+
+        val value = ContentValues()
+        value.put(Constants.PLATFORM_ID, platfomID)
+
+        val result = db.insert(Constants.PLATFORM_ID_TABLE, null, value)
         db.close()
         return result.toInt() != -1
     }
@@ -231,6 +245,25 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         return token
     }
 
+    fun getPlatFormID(): String {
+        var cursor12: Cursor? = null
+        val db = writableDatabase
+        var platFormID = ""
+        try {
+            cursor12 = db.rawQuery("select * from " + Constants.PLATFORM_ID_TABLE, null)
+        } catch (e: SQLiteException) {
+            db.execSQL(SQL_CREATE_PLATFORM_ID)
+            return ""
+        }
+
+        if(cursor12!!.moveToFirst()) {
+           platFormID = cursor12!!.getString(cursor12!!.getColumnIndex(Constants.PLATFORM_ID))
+        }
+        db.close()
+        return platFormID
+    }
+
+
     @Throws(SQLiteConstraintException::class)
     fun deleteTokens(token: String): Boolean {
         val db = writableDatabase
@@ -245,6 +278,11 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
     fun deleteUserActivityTime() {
         val db = writableDatabase
         db.execSQL("delete from " + Constants.USER_ACTIVITY_TIME_TABLE)
+    }
+    @Throws(SQLiteConstraintException::class)
+    fun deletePlatFormID() {
+        val db = writableDatabase
+        db.execSQL("delete from " + Constants.PLATFORM_ID_TABLE)
     }
 
     fun updateNotificationActionToDB(notificationAction: NotificationActionModel): Boolean {
@@ -637,8 +675,12 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
                 Constants.TIMESTAMP + " TEXT)"
 
         private val SQL_CREATE_TOKEN_TABLE =
-            "CREATE TABLE " + Constants.TOKEN_TABLE + " (" +
-                Constants.FIREBASE_TOKEN + " TEXT)"
+            "CREATE TABLE " + Constants.PLATFORM_ID_TABLE+ " (" +
+                Constants.PLATFORM_ID + " TEXT)"
+
+        private val SQL_CREATE_PLATFORM_ID =
+                "CREATE TABLE " + Constants.TOKEN_TABLE + " (" +
+                        Constants.FIREBASE_TOKEN + " TEXT)"
 
         private val SQL_CREATE_CLASS_TABLE =
             "CREATE TABLE " + Constants.CLASS_TABLE + " (" +
@@ -715,6 +757,8 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
 
 
         private val SQL_DELETE_TABLE = "DROP TABLE IF EXISTS " + Constants.TABLE_NAME
+
+        private val SQL_DELETE_PLATFORM_ID_TABLE = "DROP TABLE IF EXISTS " + Constants.PLATFORM_ID_TABLE
 
         private val SQL_DELETE_TOKEN_TABLE = "DROP TABLE IF EXISTS " + Constants.TOKEN_TABLE
 

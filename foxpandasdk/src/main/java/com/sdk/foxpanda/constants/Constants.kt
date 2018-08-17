@@ -9,6 +9,7 @@ internal object Constants {
     val IN_APP = "IN_APP"
     val TABLE_NAME = "foxpanda_notification_table"
     val TOKEN_TABLE = "foxpanda_token_table"
+    val PLATFORM_ID_TABLE = "foxpanda_platform_id"
     val CLASS_TABLE = "class_table"
     val USER_ACTIVITY_TIME_TABLE = "user_activity_table"
     val USER_ACTIVITY_START_TIME = "in_time"
@@ -27,6 +28,7 @@ internal object Constants {
     val EXTERNAL_URL = "EXTERNAL_URL"
     val ID = "id"
     val CLICK_EXTERNAL_URL = "clickActionUrl"
+    val PLATFORM_ID = "platfrom_id"
     //val DEFAULT_NOTIFICATION = "default"
 
 
