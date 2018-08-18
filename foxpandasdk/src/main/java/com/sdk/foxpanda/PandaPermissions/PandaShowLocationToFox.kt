@@ -14,9 +14,11 @@ import com.google.android.gms.location.LocationServices
 import com.sdk.foxpanda.WorkManager.FoxWorkManager
 import com.sdk.foxpanda.WorkManager.LocationWorkManager
 import com.sdk.foxpanda.applications.FoxApplication
+import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.dbHelper.DBHelper
 import com.sdk.foxpanda.data.models.PandaLocationComponent
 import com.sdk.foxpanda.utils.CommonUtils
+import com.sdk.foxpanda.utils.NetworkUtil
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.concurrent.TimeUnit
 
@@ -39,7 +41,7 @@ internal object  PandaShowLocationToFox {
                         // Got last known location. In some rare situations this can be null.
                        // Log.e("Current LocationLat",location!!.latitude.toString())
                       //  Log.e("Current LocationLong",location.longitude.toString())
-
+                            NetworkUtil.initRetrofit(true, Constants.DEFAULT_LOG_LEVEL,context)
                             val lat = location!!.latitude
                             val lng = location.longitude
                             if (lat != null && lng != null){
@@ -48,6 +50,11 @@ internal object  PandaShowLocationToFox {
                                 if (pandaTracked && FoxApplication.instance.isFoxConnectedToPanda){
                                     val pandaFootPrint = dbHelper.getLazyPandaLocationTrack()
                                     CommonUtils.updatePandaLocationFox(pandaFootPrint,true,context)
+                                }
+                                val notificationActionModel = dbHelper.getNotificationActionTime()
+                                if (notificationActionModel.size > 0 && FoxApplication.instance.isFoxConnectedToPanda)
+                                {
+                                    CommonUtils.updateNotificationActionToServer(notificationActionModel,true,context)
                                 }
                             }
                         }

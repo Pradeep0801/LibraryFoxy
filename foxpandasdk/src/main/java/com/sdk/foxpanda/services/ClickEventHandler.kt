@@ -34,7 +34,6 @@ class ClickEventHandler: BroadcastReceiver() {
            //update notification click to server
             CommonUtils.updateNotificationActionToServer(dbHelper.getNotificationActionTime(),true,context)
         }
-
         if(intent!!.action == Constants.OPEN_SHARE) {
             val shareMessage = intent.getStringExtra(Constants.SHARE_MESSAGE)
             if (shareMessage != null) {

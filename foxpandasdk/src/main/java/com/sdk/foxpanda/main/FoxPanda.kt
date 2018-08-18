@@ -20,6 +20,7 @@ import com.sdk.foxpanda.MediaManager.FoxListening
 import com.sdk.foxpanda.PandaPermissions.PandaShowLocationToFox
 import com.sdk.foxpanda.WorkManager.FoxWorkManager
 import com.sdk.foxpanda.WorkManager.LocationWorkManager
+import com.sdk.foxpanda.WorkManager.PandaInfoWorkManager
 import com.sdk.foxpanda.applications.FoxApplication
 import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.dbHelper.DBHelper
@@ -70,6 +71,15 @@ class FoxPanda {
             val myWork = myWorkBuilder.build()
             WorkManager.getInstance().enqueue(myWork)
 
+            val myWorkBuilder1 = PeriodicWorkRequestBuilder<PandaInfoWorkManager>(12, TimeUnit.HOURS)
+            val myWork1 = myWorkBuilder1.build()
+            WorkManager.getInstance().enqueue(myWork1)
+
+
+
+
+
+
 
 
 //            if(EasyPermissions.hasPermissions(context, *PandaShowLocationToFox.STORAGE) && !CommonUtils.pandaHasUsagePermission(context)){
@@ -82,16 +92,16 @@ class FoxPanda {
 //            }
 
 
-            if (db.getIsInfoUpdated() == 1) {
-                Log.e("token already updated","-----")
-            } else {
-                val token = db.getToken()
-                val isConnected = FoxApplication.instance.isFoxConnectedToPanda
-                if (isConnected && token != "") {
-                    CommonUtils.registerTokenToServer(db.getToken(), context)
-                }
-
-            }
+//            if (db.getIsInfoUpdated() == 1) {
+//                Log.e("token already updated","-----")
+//            } else {
+//                val token = db.getToken()
+//                val isConnected = FoxApplication.instance.isFoxConnectedToPanda
+//                if (isConnected && token != "") {
+//                    CommonUtils.registerTokenToServer(db.getToken(), context)
+//                }
+//
+//            }
             if (db.getUserActivityTime().size > 0) {
                 CommonUtils.updateUserActivityTimeToServer(db.getUserActivityTime(), true, context)
             }

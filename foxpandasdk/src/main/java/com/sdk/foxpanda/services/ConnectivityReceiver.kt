@@ -12,7 +12,7 @@ class ConnectivityReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, arg1: Intent) {
         var connection  = FoxApplication.instance
         connection.isFoxConnectedToPanda = isConnectedOrConnecting(context)
-        FoxPanda.FPLogger("online", FoxApplication.instance.isFoxConnectedToPanda.toString())
+      //  FoxPanda.FPLogger("online", FoxApplication.instance.isFoxConnectedToPanda.toString())
     }
 
     private fun isConnectedOrConnecting(context: Context): Boolean {

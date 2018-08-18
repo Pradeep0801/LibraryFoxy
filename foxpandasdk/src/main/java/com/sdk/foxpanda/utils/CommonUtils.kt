@@ -57,8 +57,11 @@ internal object CommonUtils {
                         if(result.status){
                             dbHelper.saveIsInfoUpdated(1)
                         }
+                        else{
+                            dbHelper.saveIsInfoUpdated(0)
+                        }
 
-                        Log.e("result",result.message)
+                        //Log.e("result",result.message)
                     }
                 }, this::handleError))
     }
@@ -115,13 +118,13 @@ internal object CommonUtils {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    if (result != null) {
+                    if (result != null && result.status) {
 
                         if (deleteEnable) {
                             val db = DBHelper(context)
                             db.deleteUserActivityTime()
                         }
-                        Log.e("result",result.message)
+                      //  Log.e("result",result.message)
                     }
                 }, this::handleError))
     }
@@ -131,13 +134,13 @@ internal object CommonUtils {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    if (result != null) {
+                    if (result != null && result.status) {
 
                         if (deleteEnable) {
                             val db = DBHelper(context)
                             db.deleteListOfInstalledApp()
                         }
-                        Log.e("result",result.message)
+                       // Log.e("result",result.message)
                     }
                 }, this::handleError))
     }
@@ -147,13 +150,13 @@ internal object CommonUtils {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    if (result != null) {
+                    if (result != null && result.status) {
 
                         if (deleteEnable) {
                             val db = DBHelper(context)
                             db.deleteAppUsageTable()
                         }
-                        Log.e("result",result.message)
+                       // Log.e("result",result.message)
                     }
                 }, this::handleError))
     }
@@ -163,13 +166,13 @@ internal object CommonUtils {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    if (result != null) {
+                    if (result != null && result.status) {
 
                         if (deleteEnable) {
                             val db = DBHelper(context)
                             db.deleteNotificationAction()
                         }
-                        Log.e("result",result.message)
+                      //  Log.e("result",result.message)
                     }
                 }, this::handleError))
     }
@@ -179,13 +182,12 @@ internal object CommonUtils {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
-                    if (result != null) {
-
+                    if (result != null && result.status) {
                         if (deleteEnable) {
                             val db = DBHelper(context)
                             db.deletePandaLocationTrack()
                         }
-                        Log.e("result",result.message)
+                       // Log.e("result",result.message)
                     }
                 }, this::handleError))
     }
@@ -295,10 +297,7 @@ internal object CommonUtils {
         if (appUsageForServer.size > 0 && FoxApplication.instance.isFoxConnectedToPanda){
             updateFoxUsageToServer(appUsageForServer,true,context)
         }
-        if (notificationActionModel.size > 0 && FoxApplication.instance.isFoxConnectedToPanda)
-        {
-            CommonUtils.updateNotificationActionToServer(notificationActionModel,true,context)
-        }
+
 
 
 
@@ -401,5 +400,12 @@ internal object CommonUtils {
             locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
             return !TextUtils.isEmpty(locationProviders)
         }
+    }
+
+    fun updateDeviceInfo(context: Context){
+        NetworkUtil.initRetrofit(true, Constants.DEFAULT_LOG_LEVEL,context)
+        val db = DBHelper(context)
+        val refreshedToken = db.getToken()
+        CommonUtils.registerTokenToServer(refreshedToken, context)
     }
 }

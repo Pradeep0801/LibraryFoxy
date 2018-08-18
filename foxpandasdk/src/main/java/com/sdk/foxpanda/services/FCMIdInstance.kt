@@ -12,10 +12,8 @@ class FCMIdInstance: FirebaseInstanceIdService() {
     override fun onTokenRefresh() {
         super.onTokenRefresh()
         dbHelper = DBHelper(this)
-        NetworkUtil.initRetrofit(true, Constants.DEFAULT_LOG_LEVEL,this)
         val refreshedToken = FirebaseInstanceId.getInstance().token
         dbHelper.registerToken(refreshedToken!!)
-        CommonUtils.registerTokenToServer(refreshedToken, this)
     }
 
 }

@@ -25,7 +25,6 @@ import com.sdk.foxpanda.data.models.DeviceInfoModel
 import kotlin.jvm.java
 
 internal object DeviceInfoUtil {
-
     fun getDeviceInfo(context: Context): DeviceInfoModel {
         val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         var deviceInfoModel : DeviceInfoModel = DeviceInfoModel()
