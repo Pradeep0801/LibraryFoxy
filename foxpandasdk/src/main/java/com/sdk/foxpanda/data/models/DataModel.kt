@@ -126,3 +126,7 @@ data class PandaLocationComponent(
         @SerializedName("ts")
         var pandaTimeStamp : String = ""
 )
+data class TagPandaModel(
+        var key : String = "",
+        var value : String = ""
+)

@@ -15,6 +15,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.util.Log
+import android.util.Log.e
 import androidx.work.*
 import com.sdk.foxpanda.MediaManager.FoxListening
 import com.sdk.foxpanda.PandaPermissions.PandaShowLocationToFox
@@ -27,6 +28,7 @@ import com.sdk.foxpanda.data.dbHelper.DBHelper
 import com.sdk.foxpanda.data.models.AppUsageStats
 import com.sdk.foxpanda.data.models.ListOfInstalledApp
 import com.sdk.foxpanda.data.models.NotificationModel
+import com.sdk.foxpanda.data.models.TagPandaModel
 import com.sdk.foxpanda.services.ConnectivityReceiver
 import com.sdk.foxpanda.utils.CommonUtils
 import com.sdk.foxpanda.utils.NetworkUtil
@@ -34,7 +36,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-
+import kotlin.collections.HashMap
 
 
 @SuppressLint("Registered")
@@ -149,7 +151,18 @@ class FoxPanda {
         }
 
 
+        fun setTagToPanda(context: Context,tagMap : Map<String,String>){
+            val pandaTagList = ArrayList<TagPandaModel>()
 
+            for (entry in tagMap.entries)
+            {
+                val pandaModel = TagPandaModel(entry.key,entry.value)
+                Log.e("%s -> %s%n", entry.key +  entry.value)
+                pandaTagList.add(pandaModel)
+            }
+
+            CommonUtils.updatePandaTag(pandaTagList,true,context)
+        }
 
 
 
@@ -194,6 +207,8 @@ class FoxPanda {
 
 
     }
+
+
 
 
 

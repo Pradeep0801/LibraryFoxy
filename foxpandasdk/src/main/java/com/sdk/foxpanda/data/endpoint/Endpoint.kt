@@ -31,5 +31,10 @@ internal interface Endpoint {
     @POST("api/v1/sdk/platform/device/apps/usage")
     fun updateFoxUsageStatToServer(@Body foxUsageStats: List<AppUsageStats>): Observable<BaseResult>
 
+    @POST("api/v1/sdk/platform/device/tags")
+    fun updatePandaTagToServer(@Body tagPandaModel:List<TagPandaModel>): Observable<BaseResult>
+
+
+
 
 }

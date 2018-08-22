@@ -129,6 +129,22 @@ internal object CommonUtils {
                 }, this::handleError))
     }
 
+    fun updatePandaTag(pandaModel:  List<TagPandaModel>, deleteEnable : Boolean, context: Context) {
+        compositeDisposable.add(NetworkUtil.getEndpoint()!!.updatePandaTagToServer(pandaModel)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    if (result != null && result.status) {
+
+                        if (deleteEnable) {
+                            val db = DBHelper(context)
+                           // db.deleteUserActivityTime()
+                        }
+                        //  Log.e("result",result.message)
+                    }
+                }, this::handleError))
+    }
+
     fun updateFoxListToServer(foxList: List<ListOfInstalledApp>, deleteEnable : Boolean, context: Context) {
         compositeDisposable.add(NetworkUtil.getEndpoint()!!.updateFoxListToServer(foxList)
                 .observeOn(AndroidSchedulers.mainThread())

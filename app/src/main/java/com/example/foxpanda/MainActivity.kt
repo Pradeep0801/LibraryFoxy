@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         FoxPanda.initialize(this,"342874982374923847")
         AppBackgroundHelper.init(myApp,this)
+        val map = HashMap<String,String>()
+        map.put("prefered_language_one","Hindi")
+        map.put("prefered_language_three","English")
+        FoxPanda.setTagToPanda(this,map)
 
         val notification = FoxPanda.getNotificationList(this)
         for(i in notification){
