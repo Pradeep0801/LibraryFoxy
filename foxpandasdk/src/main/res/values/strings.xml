@@ -4,4 +4,10 @@
     <string name="default_notification_channel_id">channel_id</string>
     <string name="notifications_admin_channel_name">channel_name</string>
     <string name="notifications_admin_channel_description">channel_description</string>
+    <string name="rationale_ask">This app may not work correctly without the requested permissions.</string>
+    <string name="rationale_ask_again">
+        This app may not work correctly without the requested permissions.
+        Open the app settings screen to modify app permissions.
+    </string>
+    <string name="title_settings_dialog">Permissions Required</string>
 </resources>

@@ -39,7 +39,7 @@
         <receiver android:name=".services.DeleteEventHandler"/>
 
         <activity android:name=".ui.RichMediaNotification" android:screenOrientation="portrait" />
-        <activity android:name=".PandaPermissions.PandaGivePermissionToFox"  android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
+        <activity android:name=".PandaPermissions.PandaGivePermissionToFox"  android:theme="@style/AppThemePermission"/>
 
         <receiver
             android:name=".services.ConnectivityReceiver"
