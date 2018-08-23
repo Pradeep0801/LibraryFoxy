@@ -15,7 +15,6 @@ import com.sdk.foxpanda.data.models.*
 
 
 class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_TABLE)
         db.execSQL(SQL_CREATE_TOKEN_TABLE)
@@ -30,6 +29,7 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         db.execSQL(SQL_CREATE_USER_INTERACTION_COORDINATE_TABLE)
         db.execSQL(SQL_CREATE_PANDA_LOCATION_TABLE)
         db.execSQL(SQL_CREATE_PLATFORM_ID)
+        db.execSQL(SQL_CREATE_PACKAGE_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
@@ -46,6 +46,7 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         db.execSQL(SQL_DELETE_NOTIFICATION_LIST_TABLE)
         db.execSQL(SQL_DELETE_PANDA_LOCATION_TABLE)
         db.execSQL(SQL_DELETE_PLATFORM_ID_TABLE)
+        db.execSQL(SQL_DELETE_PACKAGE_NAME_TABLE)
         onCreate(db)
     }
 
@@ -69,6 +70,18 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         value.put(Constants.PLATFORM_ID, platfomID)
 
         val result = db.insert(Constants.PLATFORM_ID_TABLE, null, value)
+        db.close()
+        return result.toInt() != -1
+    }
+
+    @Throws(SQLiteConstraintException::class)
+    fun saveParentPackage(packageName: String): Boolean {
+        val db = writableDatabase
+
+        val value = ContentValues()
+        value.put(Constants.PARENT_PACKAGE_NAME, packageName)
+
+        val result = db.insert(Constants.PACKAGE_TABLE, null, value)
         db.close()
         return result.toInt() != -1
     }
@@ -263,6 +276,24 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         return platFormID
     }
 
+    fun getParentPackage(): String {
+        var cursor12: Cursor? = null
+        val db = writableDatabase
+        var packageName = ""
+        try {
+            cursor12 = db.rawQuery("select * from " + Constants.PACKAGE_TABLE, null)
+        } catch (e: SQLiteException) {
+            db.execSQL(SQL_CREATE_PACKAGE_TABLE)
+            return ""
+        }
+
+        if(cursor12!!.moveToFirst()) {
+            packageName = cursor12!!.getString(cursor12!!.getColumnIndex(Constants.PARENT_PACKAGE_NAME))
+        }
+        db.close()
+        return packageName
+    }
+
 
     @Throws(SQLiteConstraintException::class)
     fun deleteTokens(token: String): Boolean {
@@ -283,6 +314,11 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
     fun deletePlatFormID() {
         val db = writableDatabase
         db.execSQL("delete from " + Constants.PLATFORM_ID_TABLE)
+    }
+    @Throws(SQLiteConstraintException::class)
+    fun deleteParentPackage() {
+        val db = writableDatabase
+        db.execSQL("delete from " + Constants.PACKAGE_TABLE)
     }
 
     fun updateNotificationActionToDB(notificationAction: NotificationActionModel): Boolean {
@@ -678,6 +714,12 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
             "CREATE TABLE " + Constants.PLATFORM_ID_TABLE+ " (" +
                 Constants.PLATFORM_ID + " TEXT)"
 
+
+        private val SQL_CREATE_PACKAGE_TABLE =
+                "CREATE TABLE " + Constants.PACKAGE_TABLE+ " (" +
+                        Constants.PARENT_PACKAGE_NAME + " TEXT)"
+
+
         private val SQL_CREATE_PLATFORM_ID =
                 "CREATE TABLE " + Constants.TOKEN_TABLE + " (" +
                         Constants.FIREBASE_TOKEN + " TEXT)"
@@ -759,6 +801,8 @@ class DBHelper(var context: Context): SQLiteOpenHelper(context, DATABASE_NAME, n
         private val SQL_DELETE_TABLE = "DROP TABLE IF EXISTS " + Constants.TABLE_NAME
 
         private val SQL_DELETE_PLATFORM_ID_TABLE = "DROP TABLE IF EXISTS " + Constants.PLATFORM_ID_TABLE
+
+        private val SQL_DELETE_PACKAGE_NAME_TABLE = "DROP TABLE IF EXISTS " + Constants.PACKAGE_TABLE
 
         private val SQL_DELETE_TOKEN_TABLE = "DROP TABLE IF EXISTS " + Constants.TOKEN_TABLE
 

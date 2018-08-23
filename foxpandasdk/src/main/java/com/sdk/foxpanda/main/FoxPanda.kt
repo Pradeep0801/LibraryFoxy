@@ -56,23 +56,29 @@ class FoxPanda {
         var handler = Handler()
         lateinit var checkSettingOn : Runnable
 
-
         fun initialize(context: Context,foxPlatFormID : String) {
             val db = DBHelper(context)
             FoxApplication.instance.deviceID = android.provider.Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID)
             FoxApplication.instance.FoxPlatformID = foxPlatFormID
+
+          // saving platform id for future use
             db.deletePlatFormID()
             db.savePlatFormID(foxPlatFormID)
-//            if(savedPID){
-//              //  Log.e("Saved",db.getPlatFormID())
-//            }
+            // saving parent app package name for future use
+            db.deleteParentPackage()
+            db.saveParentPackage(context.packageName)
+
+
             NetworkUtil.initRetrofit(true, Constants.DEFAULT_LOG_LEVEL, context)
 
 
+            // work manager for updating location in every 4 hours -- it will also ask for permission
             val myWorkBuilder = PeriodicWorkRequestBuilder<LocationWorkManager>(4, TimeUnit.HOURS)
             val myWork = myWorkBuilder.build()
             WorkManager.getInstance().enqueue(myWork)
 
+
+            //work manager for updating device info in every 12 hourse --
             val myWorkBuilder1 = PeriodicWorkRequestBuilder<PandaInfoWorkManager>(12, TimeUnit.HOURS)
             val myWork1 = myWorkBuilder1.build()
             WorkManager.getInstance().enqueue(myWork1)
@@ -134,13 +140,6 @@ class FoxPanda {
             context.registerReceiver(ConnectivityReceiver(),
                     IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
-
-
-
-
-
-
-
         }
 
          fun getNotificationList(context: Context): List<NotificationModel> {
@@ -150,22 +149,19 @@ class FoxPanda {
             return notificationModel
         }
 
-
+        //set tag using key vale -- where key == tag name  && value == tag value
         fun setTagToPanda(context: Context,tagMap : Map<String,String>){
             val pandaTagList = ArrayList<TagPandaModel>()
 
             for (entry in tagMap.entries)
             {
                 val pandaModel = TagPandaModel(entry.key,entry.value)
-                Log.e("%s -> %s%n", entry.key +  entry.value)
+               // Log.e("%s -> %s%n", entry.key +  entry.value)
                 pandaTagList.add(pandaModel)
             }
 
             CommonUtils.updatePandaTag(pandaTagList,true,context)
         }
-
-
-
 
         //update classes to the server
         private fun updateClassesToServer(context: Context, classes: Array<String>) {

@@ -122,6 +122,8 @@ internal object Constants {
     val CURRENT_APP_PACKAGE = "app.viral.video.themobiletv.com"
 
 
+    val PACKAGE_TABLE = "packageTable"
+    val PARENT_PACKAGE_NAME = "packageName"
 
 
 

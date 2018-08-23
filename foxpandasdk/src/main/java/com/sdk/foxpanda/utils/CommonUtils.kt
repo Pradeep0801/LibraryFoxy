@@ -17,11 +17,7 @@ import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.text.TextUtils
 import android.util.Log
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.sdk.foxpanda.R
-import com.sdk.foxpanda.WorkManager.FoxWorkManager
-import com.sdk.foxpanda.WorkManager.LocationWorkManager
 import com.sdk.foxpanda.applications.FoxApplication
 import com.sdk.foxpanda.constants.Constants
 import com.sdk.foxpanda.data.dbHelper.DBHelper
@@ -383,17 +379,22 @@ internal object CommonUtils {
 
 
   fun getDrawableIconFromPackage(context: Context,name:String) : Int{
-      val resources = context.getResources()
-      val resourceId = resources.getIdentifier(name, "drawable",
-              Constants.CURRENT_APP_PACKAGE)
-
-      if (resourceId != null && resourceId > 0){
-          return resourceId
+      val db = DBHelper(context)
+      val packageName = db.getParentPackage()
+      if (!packageName.equals("")){
+          val resources = context.getResources()
+          val resourceId = resources.getIdentifier(name, "drawable",
+                  packageName)
+          if (resourceId != null && resourceId > 0){
+              return resourceId
+          }
+          else{
+              return (R.mipmap.ic_launcher)
+          }
       }
       else{
           return (R.mipmap.ic_launcher)
       }
-
     }
 
     fun isLocationEnabled(context:Context):Boolean {
